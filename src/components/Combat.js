@@ -83,7 +83,6 @@ const Combat = ({level, username, playerHealth}) => {
     }, [showAttacks]);
 
     const enemyTurn = async (playerHP) => { 
-
       let enemyInfo = {
         enemies: curEnemies,
         playerHP:playerHP
