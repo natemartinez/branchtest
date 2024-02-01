@@ -153,7 +153,6 @@ import { Link } from 'react-router-dom';
   };
 
   const nextLevel = (currentUser, level, type) => { 
-
       buttons.forEach((button) => {
         button.className = 'game-btn';
       });
@@ -180,7 +179,6 @@ import { Link } from 'react-router-dom';
     getLevel(playerName);
   }, []);
 
-  console.log(options);
 
   return (
     <div> 

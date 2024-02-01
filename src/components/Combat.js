@@ -38,7 +38,7 @@ const Combat = ({level, username, playerHealth}) => {
 
     useEffect(() => {
       getHealth(username)
-    }, [getHealth, username]);
+    }, []);
 
     const receiveEnemies = async (level) => {
       let curLevel = {
@@ -93,6 +93,7 @@ const Combat = ({level, username, playerHealth}) => {
         const response = await axios.post('http://localhost:3000/enemyAttack', enemyInfo);
         const updatedHP = response.data.newPlayerHP;
         setHealth(updatedHP);
+        setUserTurn(true);
      } catch (error) {
         console.error('Error:', error);
      }
@@ -129,8 +130,12 @@ const Combat = ({level, username, playerHealth}) => {
 
     const holdAttack = (option) => {
       // use this function to set the attack
-      setAttackBegin(true);
-      setSelectedAttack(option);
+      if(userTurn != null){
+        setAttackBegin(true);
+        setSelectedAttack(option);
+      }else {
+        return
+      }
     };
 
     useEffect(() => {
@@ -149,9 +154,9 @@ const Combat = ({level, username, playerHealth}) => {
           newText('Choose an enemy')
         }else if(userTurn === false){
           newText("Enemy's Turn")
-          setTimeout(() => enemyTurn(healthBar), 2000);
-          setTimeout(() => newText('Ghost slapped you!'), 4000);
-          setTimeout(() => newText("What's your move?"), 5500);
+          setTimeout(() => enemyTurn(healthBar), 1500);
+          setTimeout(() => newText('Ghost slapped you!'), 3000);
+          setTimeout(() => newText("What's your move?"), 5000);
           
         }
 
