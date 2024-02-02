@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import ProgressBar from 'react-bootstrap/ProgressBar';
 import {useLocation} from 'react-router-dom';
 import Combat from './Combat';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import { Link } from 'react-router-dom';
 // Placed hp here to display combat changes inside HUD
  const Game = ({playerName}) => {
