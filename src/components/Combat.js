@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ProgressBar from 'react-bootstrap/ProgressBar';
+import { ProgressBar } from 'react-bootstrap';
 const images = require.context('../../public/images', true);
 
 const Combat = ({level, username, playerHealth}) => {
