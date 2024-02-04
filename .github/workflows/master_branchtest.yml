@@ -30,12 +30,17 @@ jobs:
           npm install
           npm run build
           cp -r ../build ../server
+
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r    
             
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: branchtest
           path: server
+
+      
 
   deploy:
     runs-on: ubuntu-latest
