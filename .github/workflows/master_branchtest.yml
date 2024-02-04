@@ -21,21 +21,21 @@ jobs:
 
       - name: Install npm packages - server
         run: |
-          cd branchtest/server
+          cd server
           npm install       
       
       - name: Install npm packages, build then copy files - client
         run: |
-          cd branchtest/client
+          cd client
           npm install
           npm run build
-          cp -r ./build ../server/public
+          cp -r ./build ../server
             
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: branchtest
-          path: branchtest/server
+          path: server
 
   deploy:
     runs-on: ubuntu-latest
