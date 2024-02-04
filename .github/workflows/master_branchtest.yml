@@ -26,7 +26,7 @@ jobs:
       
       - name: Install npm packages, build then copy files - client
         run: |
-          cd src
+          cd public
           npm install
           npm run build
           cp -r ./build ../server
