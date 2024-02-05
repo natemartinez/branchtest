@@ -36,7 +36,7 @@ const InfoForms = () => {
         password,
       };
 
-      axios.post('http://localhost:3000/signup', newUser)
+      axios.post('https://branchtest-bkend.onrender.com/signup', newUser)
       .then(response => {
        const { message } = response.data;
        if (message === "User already exists") {
@@ -106,7 +106,7 @@ const InfoForms = () => {
            password,
          };
        
-         axios.post('http://localhost:3000/login', existingUser)
+         axios.post('https://branchtest-bkend.onrender.com/login', existingUser)
          .then(response => {
            console.log(response.data);
            const { message } = response.data;
