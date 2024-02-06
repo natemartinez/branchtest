@@ -28,7 +28,7 @@ import { Link } from 'react-router-dom';
       username:username
     };
 
-    axios.post('http://localhost:3000/buildSkills', userInfo)
+    axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
       .then(response => { 
         let hpData = response.data.doc.status;
         setHealth(hpData.health)
@@ -121,7 +121,7 @@ import { Link } from 'react-router-dom';
       username:currentUser
     };
 
-     axios.post('http://localhost:3000/buildSkills', userInfo)
+     axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
       .then(response => { 
         let skills = response.data.doc;
         //console.log(skills)
@@ -138,7 +138,7 @@ import { Link } from 'react-router-dom';
       username: currentUser
      };
 
-     axios.post('http://localhost:3000/currentStage', userInfo)
+     axios.post('https://branchtest-bkend.onrender.com/currentStage', userInfo)
       .then(response => { 
         let options = response.data.options;
         let type = response.data.stageType;
@@ -163,7 +163,7 @@ import { Link } from 'react-router-dom';
         type: type
       };
 
-      axios.post('http://localhost:3000/stageChange', stageInfo)
+      axios.post('https://branchtest-bkend.onrender.com/stageChange', stageInfo)
       .then(response => {
         console.log(response.data);
       })

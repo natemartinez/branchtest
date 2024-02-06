@@ -14,7 +14,7 @@ const Result = (props) => {
 
   useEffect(() => {
     const sendtoServer = (results) => {
-      axios.post('http://localhost:3000/sendUser', results)
+      axios.post('https://branchtest-bkend.onrender.com/sendUser', results)
         .then(response => {
           let statResults = response.data.stats;
           setStats(statResults);

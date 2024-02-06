@@ -5,8 +5,7 @@ const Question = ({data, answerSelect, nextQuestion}) => {
   const {question, options} = data;
   const [chosenOption, setChosenOption] = useState(null);
   const [answerSelected, setAnswerSelected] = useState(false);
-    
-
+  
   const optionSelected = (optionName) => {
     // Only the chosen options will have their class changed
     setChosenOption(optionName);
