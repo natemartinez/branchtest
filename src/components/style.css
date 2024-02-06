@@ -34,7 +34,7 @@ body{
 .form-btn{
     width: 7em;
     height: 2.5em;
-    margin: 1em;
+    margin: 2em;
     border-radius: 10px;
     font-size: 2.5em;
     background-color:rgb(68, 52, 45);;
@@ -115,10 +115,12 @@ body{
     text-align: center;
 }
 .quiz-div h3{
-    font-size: 3.5em;
+    font-size: 2.5em;
+    padding: 0.5em;
 }
 .option-list{
     display: flex;
+    flex-direction: column;
     list-style: none;
     padding: 0;
     justify-content: center;
@@ -143,7 +145,7 @@ body{
 }
 .next-btn{
     width: 8em;
-    height: 3em;
+    height: 2em;
     font-size: 2.5em;
     background-color:white;
     color:rgb(86, 64, 54);
@@ -283,11 +285,12 @@ body{
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
 }
 .game-btn{
     width: 9em;
     height: 3.5em;
-    margin: 1em;
+    margin: 0.5em;
     border-radius: 10px;
     font-size: 1.5em;
     padding: 0.5em;
@@ -362,6 +365,7 @@ body{
     color: white;
     border-radius: 10px;
     font-size: 2em;
+    margin-top: 0.5em;
 }
 
 @media screen and (min-width: 480px) {
@@ -418,7 +422,7 @@ body{
 /*Combat Stage*/
 .action-btn{
     width: 9em;
-    height: 3.5em;
+    height: 2.5em;
     margin: 0.3em;
     border-radius: 10px;
     font-size: 1.5em;

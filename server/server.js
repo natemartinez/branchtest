@@ -167,6 +167,8 @@ app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
 
   let doc = await PlayerModel.findOne({ username: username });
+  console.log(doc.stats);
+
   let physicalClass = doc.stats.physical;
   let mentalClass = doc.stats.mental;
   let skillArray = [];
