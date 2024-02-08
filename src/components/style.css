@@ -156,11 +156,13 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: #675a53;
 }
 .trait-title{
     font-size: 3em;
     font-weight: bold;
 }
+
 .trait-list{
     display: flex;
     flex-direction: column;
@@ -170,6 +172,20 @@ body{
     font-size: 3em;
     padding: 0;
 }
+.trait-list li{
+    font-size: 0.8em;
+    text-align: center;
+}
+.trait-list div{
+    display: flex;
+    align-items: center;
+    margin-top: 1em;
+}
+
+.trait-img{
+    width: 3em;
+}
+
 .result-btn{
     width: 8em;
     height: 3em;
@@ -187,22 +203,46 @@ body{
     flex-direction: column;
     align-items: center;
     color: rgb(0, 0, 0);
+    margin-top: 5em;
 }
 .stats-list ul{
     display: flex;
     list-style: none;
     align-items: center;
-    flex-direction: row;
+    flex-direction: column;
     padding: 0;
     justify-content: space-evenly;
+    position: relative;
+    z-index: 2;
 }
 .stat-div{
     width: 100%;
+    padding: 1em;
     text-align: center;
-    font-size: 1.8em;
+    font-size: 2.5em;
+    height: 8em;
     color: black;
+    border: 2px solid black;
 }
+.stat-div h2{
+    font-size: 1.5em;
+    z-index: 2;
+    position: relative;
+}
+
+.stat-bkgrd{
+    width: 5em;
+    height: 5.5em;
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    opacity: 20%;
+}
+
 #physical{
+    
     background-color: #ff8a88;
 }
 #mental{
@@ -215,7 +255,20 @@ body{
     background-color: #efa51d;
 }
 @media screen and (min-width: 480px) {
-   
+   .quiz-div{
+    margin-top: 5em;
+   }
+
+   .trait-list{
+    flex-direction: row;
+   }
+   .trait-img{
+    width: 2em;
+   }
+
+   .stats-list{
+    width: 66vw;
+   }
 }
 
 

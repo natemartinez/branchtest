@@ -82,19 +82,19 @@ app.post('/sendUser', async (req, res) => {
   const results = req.body[1];
 
   let stats = {
-    'physical': {
+    'Physical': {
       'strength': 1,
       'dexterity': 1
     },
-    'mental': {
+    'Mental': {
       'intuition': 1,
       'intelligence': 1
     },
-    'soul': {
+    'Soul': {
       'willpower': 1,
       'resistance': 1
     },
-    'expression': {
+    'Expression': {
       'creativity': 1,
       'presence': 1
     }
@@ -110,45 +110,44 @@ app.post('/sendUser', async (req, res) => {
   results.forEach(result => {
     switch (result) {
        case 'Logical':
-       stats.mental.intelligence += 2;
-       stats.mental.intuition += 1;
+       stats.Mental.intelligence += 2;
+       stats.Mental.intuition += 1;
        break;
        case 'Creative':
-       stats.expression.creativity += 2;
-       stats.expression.presence += 1;
+       stats.Expression.creativity += 2;
+       stats.Expression.presence += 1;
        break;
        case 'Introvert':
-       stats.mental.intuition += 2;
-       stats.expression.creativity += 1;
+       stats.Mental.intuition += 2;
+       stats.Expression.creativity += 1;
        break;
        case 'Extrovert':
-       stats.expression.presence += 2;
-       stats.soul.willpower += 1;
+       stats.Expression.presence += 2;
+       stats.Soul.willpower += 1;
        break;
        case 'Early Bird':
-       stats.physical.strength += 1;
-       stats.physical.dexterity += 1;
+       stats.Physical.strength += 1;
+       stats.Physical.dexterity += 1;
        break;
        case 'Night Owl':
-       stats.soul.resistance += 1;
-       stats.soul.willpower += 2;
+       stats.Soul.resistance += 1;
+       stats.Soul.willpower += 2;
        break;
        case 'Fierce':
-       stats.physical.strength += 2;
-       stats.soul.willpower += 1;
-       stats.soul.resistance += 1;
+       stats.Physical.strength += 2;
+       stats.Soul.willpower += 1;
+       stats.Soul.resistance += 1;
        break;
        case 'Steady':
-       stats.mental.intuition += 2;
-       stats.expression.presence += 1;
-       stats.soul.willpower += 2;
+       stats.Mental.intuition += 2;
+       stats.Expression.presence += 1;
+       stats.Soul.willpower += 2;
        break;
     } 
   });
 
   try {
     let doc = await PlayerModel.findOne({ username: username.user });
-
     if (!doc) {
       doc = new PlayerModel({ username: username.user, status:status, skills:skills, personality: results, stats: stats, progress: progressStart });
       await doc.save();
@@ -167,10 +166,9 @@ app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
 
   let doc = await PlayerModel.findOne({ username: username });
-  console.log(doc.stats);
 
-  let physicalClass = doc.stats.physical;
-  let mentalClass = doc.stats.mental;
+  let physicalClass = doc.stats.Physical;
+  let mentalClass = doc.stats.Mental;
   let skillArray = [];
 
   if(doc){

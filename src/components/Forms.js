@@ -152,9 +152,9 @@ const InfoForms = () => {
                 required
               />
               <button className='submit-btn' type="submit">Submit</button>
-              <button className='form-btn' onClick={showRegisterForm}>Register</button> 
+              
           </form>  
-          
+          <button className='form-btn' onClick={showRegisterForm}>Register</button>
         </div>
        )
     };

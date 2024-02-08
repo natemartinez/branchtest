@@ -179,6 +179,10 @@ import { Link } from 'react-router-dom';
     getLevel(playerName);
   }, []);
 
+  useEffect(() => {
+    console.log(stageType);
+  }, [stageType]);
+
 
   return (
     <div> 
