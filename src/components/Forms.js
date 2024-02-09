@@ -58,7 +58,7 @@ const InfoForms = () => {
             <div>
               <div className='form-logo-div'>
                 <img className='form-logo' src={logo} alt="Description" /> 
-                <h2>Register</h2>
+                <h1>Register</h1>
                 <p className='message'>{message}</p>
               </div>
     
@@ -133,7 +133,7 @@ const InfoForms = () => {
         <div>           
           <div className='form-logo-div'>
                 <img className='form-logo' src={logo} alt="Description" /> 
-                <h2>Login</h2>
+                <h1>Login</h1>
                 <p className='message'>{message}</p>
           </div>
           <form className='input-form' onSubmit={submit}>

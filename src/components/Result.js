@@ -46,6 +46,7 @@ const Result = (props) => {
         </div>
        ))}
       </ul>
+      <img id='scroll-arrow' src={images('./arrow.png')}></img>
       <div className='stats-list'>
         {Object.keys(stats).map(category => (
          <div id={category} className='stat-div' key={category}>

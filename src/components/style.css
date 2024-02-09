@@ -12,7 +12,9 @@ body{
     align-items: center;
 }
 .form-logo{
-    width: 20em;
+    width: 10em;
+    margin-top: 1.5em;
+    margin-bottom: 3em;
 }
 .logo-div{
     display: flex;
@@ -23,7 +25,7 @@ body{
     margin-top: 1em;
 }
 .logo{
-    width: 20em;
+    width: 10em;
 }
 
 .form-btn-div{
@@ -35,7 +37,7 @@ body{
 .form-btn{
     width: 7em;
     height: 2.5em;
-    margin: 1em;
+    margin: 1.5em;
     border-radius: 10px;
     font-size: 2.5em;
     background-color:rgb(68, 52, 45);;
@@ -50,7 +52,7 @@ body{
 }
 .input-form input{
     height: 2em;
-    width: 10em;
+    width: 13em;
     padding: 1em;
     font-size: 1.5em;
     margin: 1em;
@@ -177,26 +179,31 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items:center;
     list-style: none;
-    font-size: 3em;
+    font-size: 2.6em;
     padding: 0;
     opacity: 1;
-    animation: fadeIn 2s ease-in; 
+    animation: fadeIn 1.5s ease-in; 
 }
 .trait-list li{
     font-size: 0.8em;
     text-align: center;
+    font-weight: bold;
 }
 .trait-list div{
     display: flex;
     align-items: center;
     margin-top: 1em;
+    justify-content: space-between;
 }
 
 .trait-img{
     width: 3em;
 }
+#scroll-arrow{
+    width: 15em;
+}
+
 
 .result-btn{
     width: 8em;
@@ -216,11 +223,12 @@ body{
     align-items: center;
     color: rgb(0, 0, 0);
     margin-top: 5em;
+    opacity: 1;
+    animation: fadeIn 1s ease-in;
 }
 .stats-list ul{
     display: flex;
     list-style: none;
-    opacity: 0;
     align-items: center;
     flex-direction: column;
     padding: 0;
