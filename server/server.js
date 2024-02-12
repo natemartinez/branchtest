@@ -82,19 +82,19 @@ app.post('/sendUser', async (req, res) => {
   const results = req.body[1];
 
   let stats = {
-    'Physical': {
+    'physical': {
       'strength': 1,
       'dexterity': 1
     },
-    'Mental': {
+    'mental': {
       'intuition': 1,
       'intelligence': 1
     },
-    'Soul': {
+    'soul': {
       'willpower': 1,
       'resistance': 1
     },
-    'Expression': {
+    'expression': {
       'creativity': 1,
       'presence': 1
     }
@@ -110,38 +110,38 @@ app.post('/sendUser', async (req, res) => {
   results.forEach(result => {
     switch (result) {
        case 'Logical':
-       stats.Mental.intelligence += 2;
-       stats.Mental.intuition += 1;
+       stats.mental.intelligence += 2;
+       stats.mental.intuition += 1;
        break;
        case 'Creative':
-       stats.Expression.creativity += 2;
-       stats.Expression.presence += 1;
+       stats.expression.creativity += 2;
+       stats.expression.presence += 1;
        break;
        case 'Introvert':
-       stats.Mental.intuition += 2;
-       stats.Expression.creativity += 1;
+       stats.mental.intuition += 2;
+       stats.expression.creativity += 1;
        break;
        case 'Extrovert':
-       stats.Expression.presence += 2;
-       stats.Soul.willpower += 1;
+       stats.expression.presence += 2;
+       stats.soul.willpower += 1;
        break;
        case 'Early Bird':
-       stats.Physical.strength += 1;
-       stats.Physical.dexterity += 1;
+       stats.physical.strength += 1;
+       stats.physical.dexterity += 1;
        break;
        case 'Night Owl':
-       stats.Soul.resistance += 1;
-       stats.Soul.willpower += 2;
+       stats.soul.resistance += 1;
+       stats.soul.willpower += 2;
        break;
        case 'Fierce':
-       stats.Physical.strength += 2;
-       stats.Soul.willpower += 1;
-       stats.Soul.resistance += 1;
+       stats.physical.strength += 2;
+       stats.soul.willpower += 1;
+       stats.soul.resistance += 1;
        break;
        case 'Steady':
-       stats.Mental.intuition += 2;
-       stats.Expression.presence += 1;
-       stats.Soul.willpower += 2;
+       stats.mental.intuition += 2;
+       stats.expression.presence += 1;
+       stats.soul.willpower += 2;
        break;
     } 
   });
