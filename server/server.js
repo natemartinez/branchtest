@@ -167,8 +167,8 @@ app.post('/buildSkills', async (req, res) => {
 
   let doc = await PlayerModel.findOne({ username: username });
 
-  let physicalClass = doc.stats.Physical;
-  let mentalClass = doc.stats.Mental;
+  let physicalClass = doc.stats.physical;
+  let mentalClass = doc.stats.mental;
   let skillArray = [];
 
   if(doc){
@@ -188,7 +188,6 @@ app.post('/buildSkills', async (req, res) => {
    await PlayerModel.updateOne({ username: username }, { $set: {skills: skillArray } });
   }
 
-  console.log(doc)
   try {
     res.status(200).send({doc});
   } catch (err) {
@@ -326,6 +325,9 @@ app.post('/currentStage', async (req, res) => {
       for (let i = 0; i < Stages.length; i++) {
         let curStageInfo = Stages[i].stageInfo;
         if (curStageInfo.level === level) {
+
+          console.log(curStageInfo);
+
           let stageType = curStageInfo.type;
           let options = curStageInfo.options;
           let curStage = curStageInfo.level;
@@ -333,12 +335,13 @@ app.post('/currentStage', async (req, res) => {
            if(stageType === 'search') {
               // search events will compare user stats with options' difficulty
               // to come out to a probability of success
-             console.log(options);
-
              options.map((option, index) => {             
 
               let optionType = option.type;
               let optionStat = option.stat;
+             // console.log('OPTION TYPE: ', optionType );
+              console.log('PLAYER STATS: ', playerStats );
+
               let userStat = playerStats[optionType][optionStat];
 
                if(userStat > option.difficulty){
