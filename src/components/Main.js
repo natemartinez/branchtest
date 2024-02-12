@@ -134,16 +134,16 @@ import { Link } from 'react-router-dom';
   async function getLevel(currentUser) {
     // This function will return the currentStage data
     // which will send to Levels to iterate over it
-     let userInfo ={
+     let userInfo = {
       username: currentUser
      };
 
      axios.post('https://branchtest-bkend.onrender.com/currentStage', userInfo)
       .then(response => { 
+        console.log(response.data)
         let options = response.data.options;
         let type = response.data.stageType;
         let curLevel = response.data.curStage;
-        
         setStageType(type);
         displayOptions(type, options, curLevel);
       })
@@ -180,7 +180,7 @@ import { Link } from 'react-router-dom';
   }, []);
 
   useEffect(() => {
-    console.log(stageType);
+   //console.log(stageType);
   }, [stageType]);
 
 

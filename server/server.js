@@ -333,7 +333,10 @@ app.post('/currentStage', async (req, res) => {
            if(stageType === 'search') {
               // search events will compare user stats with options' difficulty
               // to come out to a probability of success
-             options.map((option, index) => {
+             console.log(options);
+
+             options.map((option, index) => {             
+
               let optionType = option.type;
               let optionStat = option.stat;
               let userStat = playerStats[optionType][optionStat];
