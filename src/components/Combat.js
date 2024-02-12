@@ -82,6 +82,7 @@ const Combat = ({level, username, playerHealth}) => {
         changeToAttack(username);
     }, [showAttacks]);
 
+    // Enemy's attack 
     const enemyTurn = async (playerHP) => { 
       let enemyInfo = {
         enemies: curEnemies,
@@ -98,6 +99,7 @@ const Combat = ({level, username, playerHealth}) => {
      }
     };
 
+    // User's attack 
     const attackStart = (option, enemyIndex) => {
       let curEnemiesUpdate = [...curEnemies];
       if(option !== null && enemyIndex !== null){

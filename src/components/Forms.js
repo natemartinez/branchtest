@@ -19,14 +19,13 @@ const InfoForms = () => {
     setShowRegister(false); // Hide register form
   };   
   
-  
-    const Register = () => {
-      const [username, setUsername] = useState('');
-      const [password, setPassword] = useState('');
-      const [message, setMessage] = useState('');
-      const [formSubmitted, setFormSubmitted] = useState(false);
-     
-      const submit = (e) => {
+  const Register = () => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [formSubmitted, setFormSubmitted] = useState(false);
+   
+    const submit = (e) => {
        e.preventDefault();
 
        const newUser = {
@@ -50,9 +49,8 @@ const InfoForms = () => {
         console.error('Error:', error);
         setMessage('Signup failed!');
       });
-      };
-
-      return (
+    };
+    return (
         <div>
            {!formSubmitted ? (
             <div>
@@ -86,18 +84,16 @@ const InfoForms = () => {
             <Quiz user={username}/>
            )}
         </div>
-      )
-    };
+    )
+  };
      
-    const Login = () => {
-      const navigate = useNavigate();
-
-      const [formSubmitted, setFormSubmitted] = useState(false);
-      const [message, setMessage] = useState('');
-      const [username, setUsername] = useState('');
-      const [password, setPassword] = useState('');
-
-      const submit = (e) => {
+  const Login = () => {
+    const navigate = useNavigate();
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [message, setMessage] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const submit = (e) => {
          e.preventDefault();
         
          const existingUser = {
@@ -127,9 +123,9 @@ const InfoForms = () => {
            setMessage("An error has occurred");
            setFormSubmitted(false);
          });
-      }
-  
-       return (
+    }
+
+     return (
         <div>           
           <div className='form-logo-div'>
                 <img className='form-logo' src={logo} alt="Description" /> 
@@ -156,10 +152,10 @@ const InfoForms = () => {
           </form>  
           <button className='form-btn' onClick={showRegisterForm}>Register</button>
         </div>
-       )
-    };
+     )
+  };
      
-    return (
+  return (
       <div>
       {!showRegister && !showLogin && (
          <div>
@@ -178,7 +174,7 @@ const InfoForms = () => {
       {showRegister && <Register />}
       {showLogin && <Login />}
     </div>
-    )
+  )
 };
 
 const Quiz = (username) => {
