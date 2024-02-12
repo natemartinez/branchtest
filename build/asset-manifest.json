@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e3abaf02.css",
+    "main.js": "/static/js/main.6bfd6b9e.js",
+    "static/js/736.3e920358.chunk.js": "/static/js/736.3e920358.chunk.js",
+    "static/media/demo-brain.png": "/static/media/demo-brain.f514ca4da888f201688a.png",
+    "static/media/ghost.png": "/static/media/ghost.5f277509d6b2ad1110f7.png",
+    "static/media/stick.png": "/static/media/stick.6981fa2ec05e6eb588a6.png",
+    "static/media/logical.png": "/static/media/logical.3fa116d54592a0153c48.png",
+    "static/media/creative.png": "/static/media/creative.8b87ad94f6d8e6b777f7.png",
+    "static/media/physical-copy.png": "/static/media/physical-copy.62155bd430d1b669bdcd.png",
+    "static/media/soul.png": "/static/media/soul.09fcf86cce0fd23c4d03.png",
+    "static/media/branchTest-logo.png": "/static/media/branchTest-logo.307c0c981b009e1cc97a.png",
+    "static/media/introvert.png": "/static/media/introvert.afe6d240b1126c3fc57f.png",
+    "static/media/mental.png": "/static/media/mental.7a10bcb9fcccdfce6d03.png",
+    "static/media/steady.png": "/static/media/steady.96279d85503a4395ac4c.png",
+    "static/media/fierce.png": "/static/media/fierce.8b75b9c4cdd30c6e9e17.png",
+    "static/media/early bird.png": "/static/media/early bird.f5afc353e84ff95e7446.png",
+    "static/media/back-arrow.png": "/static/media/back-arrow.a1cb56ecbfbbf371cab7.png",
+    "static/media/night owl.png": "/static/media/night owl.ac721e089d31df1c8cc8.png",
+    "static/media/expression.png": "/static/media/expression.1e00f0a7380303024b29.png",
+    "static/media/extrovert.png": "/static/media/extrovert.4682e1a390175d4eaeb1.png",
+    "static/media/physical.png": "/static/media/physical.3a4516dcde22daa94386.png",
+    "index.html": "/index.html",
+    "main.e3abaf02.css.map": "/static/css/main.e3abaf02.css.map",
+    "main.6bfd6b9e.js.map": "/static/js/main.6bfd6b9e.js.map",
+    "736.3e920358.chunk.js.map": "/static/js/736.3e920358.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e3abaf02.css",
+    "static/js/main.6bfd6b9e.js"
+  ]
+}
