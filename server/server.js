@@ -6,13 +6,17 @@ const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: true }));
-app.options('https://branchtest.onrender.com', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://branchtest.onrender.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Custom-Header');
-  res.status(200).end();
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
 });
+
 
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
 async function connect() {
@@ -184,15 +188,16 @@ app.post('/buildSkills', async (req, res) => {
      let punch = await SkillModel.findOne({ skillName: 'Punch' });  
      let kick = await SkillModel.findOne({ skillName: 'Kick' });
      skillArray.push(punch, kick);
-   };
+    };
 
-   if(mentalClass.intelligence >= 3){
+    if(mentalClass.intelligence >= 3){
     // get the punching skill
      let distract = await SkillModel.findOne({ skillName: 'Distraction' });  
      let wps = await SkillModel.findOne({ skillName: 'Weak Point Strike' });
      skillArray.push(distract, wps);
-   };
-   await PlayerModel.updateOne({ username: username }, { $set: {skills: skillArray } });
+    };
+
+    await PlayerModel.updateOne({ username: username }, { $set: {skills: skillArray } });
   }
   try {
     res.status(200).send({doc});
