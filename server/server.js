@@ -82,19 +82,19 @@ app.post('/sendUser', async (req, res) => {
   const results = req.body[1];
 
   let stats = {
-    'physical': {
+    'Physical': {
       'strength': 1,
       'dexterity': 1
     },
-    'mental': {
+    'Mental': {
       'intuition': 1,
       'intelligence': 1
     },
-    'soul': {
+    'Soul': {
       'willpower': 1,
       'resistance': 1
     },
-    'expression': {
+    'Expression': {
       'creativity': 1,
       'presence': 1
     }
@@ -187,7 +187,6 @@ app.post('/buildSkills', async (req, res) => {
    };
    await PlayerModel.updateOne({ username: username }, { $set: {skills: skillArray } });
   }
-
   try {
     res.status(200).send({doc});
   } catch (err) {
