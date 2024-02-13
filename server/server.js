@@ -7,7 +7,7 @@ const SkillModel = require('./models/skills');
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'))
+
 
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
 async function connect() {
