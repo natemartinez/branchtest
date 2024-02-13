@@ -8,7 +8,7 @@ const app = express();
 app.use(cors({
   origin: 'https://branchtest.onrender.com',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
+  allowedHeaders: ['Access-Control-Allow-Headers', 'Accept','Authorization', 'Content-Type'],
   credentials: true
 }));
 
