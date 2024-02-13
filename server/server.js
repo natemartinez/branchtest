@@ -7,8 +7,8 @@ const SkillModel = require('./models/skills');
 const app = express();
 app.use(express.json());
 
-app.options('*', (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+app.options('https://branchtest.onrender.com', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', 'https://branchtest.onrender.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Custom-Header');
   res.status(200).end();
