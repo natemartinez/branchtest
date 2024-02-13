@@ -26,7 +26,6 @@ const Result = (props) => {
     sendtoServer(finalResults);
   }, []);
 
-  console.log(data);
 
   const moveToMain = (results) => {
     let username = results[0].user;
