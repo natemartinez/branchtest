@@ -19,6 +19,13 @@ import { Link } from 'react-router-dom';
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
 
+  let axiosConfig = {
+   headers: {
+      'Content-Type': 'application/json;charset=UTF-8',
+      "Access-Control-Allow-Origin": "*",
+   }
+  };
+
   const setHealth = (health) => {
     setHealthBar(health);
   };
@@ -29,7 +36,7 @@ import { Link } from 'react-router-dom';
       username:username
     };
 
-    axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
+    axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo, axiosConfig)
       .then(response => { 
         let hpData = response.data.doc.status;
         setHealth(hpData.health)
@@ -122,7 +129,7 @@ import { Link } from 'react-router-dom';
       username:currentUser
     };
 
-     axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
+     axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo, axiosConfig)
       .then(response => { 
         let skills = response.data.doc;
         //console.log(skills)
