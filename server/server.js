@@ -6,7 +6,7 @@ const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
 app.use(express.json());
-
+app.use(cors({ origin: true }));
 app.options('https://branchtest.onrender.com', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', 'https://branchtest.onrender.com');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
