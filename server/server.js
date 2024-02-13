@@ -5,8 +5,13 @@ const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://branchtest.onrender.com'
+}));
 app.use(express.json());
+
+
+
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
 async function connect() {
   try {
