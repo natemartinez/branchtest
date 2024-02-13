@@ -325,8 +325,6 @@ app.post('/currentStage', async (req, res) => {
         let curStageInfo = Stages[i].stageInfo;
         if (curStageInfo.level === level) {
 
-          console.log(curStageInfo);
-
           let stageType = curStageInfo.type;
           let options = curStageInfo.options;
           let curStage = curStageInfo.level;

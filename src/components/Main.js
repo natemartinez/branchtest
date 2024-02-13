@@ -6,6 +6,7 @@ import Combat from './Combat';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+
 // Placed hp here to display combat changes inside HUD
  const Game = ({playerName}) => {
   // count receives level number from player info
