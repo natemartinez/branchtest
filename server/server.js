@@ -5,18 +5,14 @@ const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
-app.use(cors());
-app.use(express.json());
-app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://branchtest.onrender.com"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+app.use(cors({
+  origin: 'https://branchtest.onrender.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
+  credentials: true
+}));
 
+app.use(express.json());
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
 async function connect() {
   try {
