@@ -170,8 +170,6 @@ app.post('/sendUser', async (req, res) => {
   }
 });
 
-/*
-
 app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
 
@@ -180,8 +178,6 @@ app.post('/buildSkills', async (req, res) => {
   let physicalClass = doc.stats.physical;
   let mentalClass = doc.stats.mental;
   let skillArray = [];
-
-  console.log(physicalClass);
 
   if(doc){
     if(physicalClass.strength > 1){
@@ -504,4 +500,3 @@ connect();
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });
-*/
