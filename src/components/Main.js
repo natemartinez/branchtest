@@ -19,13 +19,9 @@ import { Link } from 'react-router-dom';
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
 
-
-  let axiosConfig = {
-   headers: {
-      'Content-Type': 'application/json',
-      "Access-Control-Allow-Origin": "*",
-      'Access-Control-Allow-Credentials':true
-   }
+  const axiosConfig = {
+      'Content-Type': "application/json",
+      'Access-Control-Allow-Origin': "*",
   };
 
   const setHealth = (health) => {

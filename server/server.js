@@ -5,17 +5,18 @@ const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
+app.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.use(express.json());
 app.use(
   cors({
     origin: "*",
   })
 );
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
 
 
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
