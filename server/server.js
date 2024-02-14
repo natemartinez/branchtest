@@ -6,17 +6,13 @@ const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://branchtest-bkend.onrender.com");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
 })
 app.use(express.json());
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+app.use(cors());
 
 
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
@@ -174,6 +170,8 @@ app.post('/sendUser', async (req, res) => {
   }
 });
 
+/*
+
 app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
 
@@ -182,6 +180,8 @@ app.post('/buildSkills', async (req, res) => {
   let physicalClass = doc.stats.physical;
   let mentalClass = doc.stats.mental;
   let skillArray = [];
+
+  console.log(physicalClass);
 
   if(doc){
     if(physicalClass.strength > 1){
@@ -504,3 +504,4 @@ connect();
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });
+*/
