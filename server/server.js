@@ -6,7 +6,7 @@ const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://branchtest.onrender.com");
+  res.setHeader("Access-Control-Allow-Origin", "https://branchtest-bkend.onrender.com");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
