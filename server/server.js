@@ -5,12 +5,12 @@ const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
 const app = express();
-app.all('*', function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://branchtest.onrender.com");
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
-});
-
+})
 app.use(express.json());
 app.use(
   cors({
