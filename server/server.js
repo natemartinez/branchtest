@@ -115,7 +115,6 @@ app.post('/sendUser', async (req, res) => {
     'health': 100
   };
   let progressStart = 1.1;
-
   let inventory = [];
 
   results.forEach(result => {
@@ -388,10 +387,15 @@ app.post('/itemSearch', async (req, res) => {
     // player's inventory
   const {itemName, username} = req.body;
 
-  let doc = await ItemsModel.findOne({ name: itemName });
+  let itemDoc = await ItemsModel.findOne({ name: itemName });
+  let playerDoc = await PlayerModel.findOne({ username: username });
 
-  console.log('Found DOC: ', doc);
+  console.log('Found Item: ', itemDoc);
 
+  playerDoc.inventory.push(itemDoc);
+
+  console.log('Player Inventory: ', playerDoc.inventory);
+  
   try {
     res.send({itemName})
   } catch (err) {
