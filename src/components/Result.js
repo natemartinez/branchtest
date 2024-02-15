@@ -12,9 +12,11 @@ const Result = (props) => {
   const finalResults = [username, data];
   const [stats, setStats] = useState([]);
 
+  const url = 'https://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
+
   useEffect(() => {
     const sendtoServer = (results) => {
-      axios.post('https://branchtest-bkend.onrender.com/sendUser', results)
+      axios.post(url + '/sendUser', results)
         .then(response => {
           let statResults = response.data.stats;
           setStats(statResults);

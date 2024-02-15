@@ -19,6 +19,8 @@ import { Link } from 'react-router-dom';
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
 
+  const url = 'https://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
+
   const setHealth = (health) => {
     setHealthBar(health);
   };
@@ -29,7 +31,7 @@ import { Link } from 'react-router-dom';
       username:username
     };
 
-    axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
+    axios.post(url + '/buildSkills', userInfo)
       .then(response => { 
         let hpData = response.data.doc.status;
         setHealth(hpData.health)
@@ -83,7 +85,7 @@ import { Link } from 'react-router-dom';
       itemName:item
     };
 
-    axios.post('https://branchtest-bkend.onrender.com/itemSearch', itemInfo)
+    axios.post('https://'+ url + '/itemSearch', itemInfo)
       .then(response => { 
         let item = response.data;
         console.log(item);
@@ -144,7 +146,7 @@ import { Link } from 'react-router-dom';
       username:currentUser
     };
 
-     axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
+     axios.post(url + '/buildSkills', userInfo)
       .then(response => { 
         let skills = response.data.doc;
         //console.log(skills)
@@ -161,7 +163,7 @@ import { Link } from 'react-router-dom';
       username: currentUser
      };
 
-     axios.post('https://branchtest-bkend.onrender.com/currentStage', userInfo)
+     axios.post(url + '/currentStage', userInfo)
       .then(response => { 
         let options = response.data.options;
         let type = response.data.stageType;
@@ -185,7 +187,7 @@ import { Link } from 'react-router-dom';
         type: type
       };
 
-      axios.post('https://branchtest-bkend.onrender.com/stageChange', stageInfo)
+      axios.post(url + '/stageChange', stageInfo)
       .then(response => {
         console.log(response.data);
       })

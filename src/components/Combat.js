@@ -16,6 +16,8 @@ const Combat = ({level, username, playerHealth}) => {
     const [userTurn, setUserTurn] = useState(true);
     const [healthBar, setHealthBar] = useState(null);
 
+    const url = 'https://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
+
     const setHealth = (health) => {
       setHealthBar(health);
       playerHealth(health); 
@@ -26,7 +28,7 @@ const Combat = ({level, username, playerHealth}) => {
         username:username
       };
   
-      axios.post('https://branchtest-bkend.onrender.com/buildSkills', userInfo)
+      axios.post(url + '/buildSkills', userInfo)
         .then(response => { 
           let hpData = response.data.doc.status;
           setHealth(hpData.health)
@@ -46,7 +48,7 @@ const Combat = ({level, username, playerHealth}) => {
       };
 
       try {
-         const response = await axios.post('https://branchtest-bkend.onrender.com/combatStart', curLevel);
+         const response = await axios.post(url + '/combatStart', curLevel);
          let enemies = response.data.enemies;
          setCurEnemies(Object.values(enemies));
       } catch (error) {
@@ -67,7 +69,7 @@ const Combat = ({level, username, playerHealth}) => {
       };
 
       try {
-         const response = await axios.post('https://branchtest-bkend.onrender.com/receiveSkills', optionObj);
+         const response = await axios.post(url + '/receiveSkills', optionObj);
          let data = response.data.userSkills;
          setOptions(data);
       } catch (error) {
@@ -90,7 +92,7 @@ const Combat = ({level, username, playerHealth}) => {
       };
 
       try {
-        const response = await axios.post('https://branchtest-bkend.onrender.com/enemyAttack', enemyInfo);
+        const response = await axios.post(url + '/enemyAttack', enemyInfo);
         const updatedHP = response.data.newPlayerHP;
         setHealth(updatedHP);
         setUserTurn(true);
@@ -109,7 +111,7 @@ const Combat = ({level, username, playerHealth}) => {
             enemy: curEnemies[enemyIndex],
           };
           try {
-             const response = await axios.post('https://branchtest-bkend.onrender.com/attackAction', curAttack);
+             const response = await axios.post(url + '/attackAction', curAttack);
              let attackResult = response.data.attackEvent;
              curEnemiesUpdate[enemyIndex] = attackResult.enemy;
              setCurEnemies(curEnemiesUpdate);

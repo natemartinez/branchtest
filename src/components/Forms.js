@@ -9,6 +9,8 @@ const logo = images(`./branchTest-logo.png`);
 const InfoForms = () => {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+
+  const url = 'https://localhost:3000';
   
   const showRegisterForm = () => {
     setShowRegister(true);
@@ -33,7 +35,7 @@ const InfoForms = () => {
         password,
       };
 
-      axios.post('https://branchtest-bkend.onrender.com/signup', newUser)
+      axios.post(url + '/signup', newUser)
       .then(response => {
        const { message } = response.data;
        if (message === "User already exists") {
@@ -101,7 +103,7 @@ const InfoForms = () => {
            password,
          };
        
-         axios.post('https://branchtest-bkend.onrender.com/login', existingUser)
+         axios.post(url + '/login', existingUser)
          .then(response => {
            console.log(response.data);
            const { message } = response.data;
