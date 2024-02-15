@@ -155,7 +155,6 @@ app.post('/sendUser', async (req, res) => {
        break;
     } 
   });
-  
   //
 
   try {
