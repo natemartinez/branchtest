@@ -215,7 +215,7 @@ const Stages = [
              options:[
               {
                 name:'Closet',
-                type: 'physical',
+                type: 'Physical',
                 stat: 'strength',
                 difficulty: 1,
                 result: 'Jacket',
@@ -223,7 +223,7 @@ const Stages = [
               },
               {
                 name:'Drawer',
-                type: 'mental',
+                type: 'Mental',
                 stat: 'intuition',
                 difficulty: 1,
                 result: 'Med-kit',
@@ -231,7 +231,7 @@ const Stages = [
               },
               {
                 name:'Under the rug',
-                type: 'mental',
+                type: 'Mental',
                 stat: 'intuition',
                 difficulty: 1,
                 result: 'Med-kit',
@@ -239,7 +239,7 @@ const Stages = [
               },
               {
                 name:'On top of your head',
-                type: 'mental',
+                type: 'Mental',
                 stat: 'intuition',
                 difficulty: 0,
                 result: 'Note',
@@ -280,7 +280,7 @@ const Stages = [
            options:[
             {
               name:'Desk',
-              type: 'physical',
+              type: 'Physical',
               stat: 'strength',
               difficulty: 1,
               result: 'Jacket',
@@ -288,7 +288,7 @@ const Stages = [
             },
             {
               name:'File cabinet',
-              type: 'mental',
+              type: 'Mental',
               stat: 'intuition',
               difficulty: 1,
               result: 'Med-kit',
@@ -296,7 +296,7 @@ const Stages = [
             },
             {
               name:'Check the whiteboard',
-              type: 'mental',
+              type: 'Mental',
               stat: 'intuition',
               difficulty: 1,
               result: 'Med-kit',
@@ -304,7 +304,7 @@ const Stages = [
             },
             {
               name:'Check the windows',
-              type: 'mental',
+              type: 'Mental',
               stat: 'intuition',
               difficulty: 1,
               result: 'Med-kit',
@@ -345,9 +345,6 @@ app.post('/currentStage', async (req, res) => {
 
               let optionType = option.type;
               let optionStat = option.stat;
-             // console.log('OPTION TYPE: ', optionType );
-              console.log('PLAYER STATS: ', playerStats );
-
               let userStat = playerStats[optionType][optionStat];
 
                if(userStat > option.difficulty){
