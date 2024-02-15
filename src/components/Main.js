@@ -181,7 +181,6 @@ import { Link } from 'react-router-dom';
   }, []);
 
   useEffect(() => {
-   //console.log(stageType);
   }, [stageType]);
 
 
