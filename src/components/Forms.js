@@ -10,7 +10,7 @@ const InfoForms = () => {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  const url = 'https://localhost:3000';
+  const url = 'http://localhost:3000';
   
   const showRegisterForm = () => {
     setShowRegister(true);

@@ -16,7 +16,7 @@ const Combat = ({level, username, playerHealth}) => {
     const [userTurn, setUserTurn] = useState(true);
     const [healthBar, setHealthBar] = useState(null);
 
-    const url = 'https://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
+    const url = 'http://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
 
     const setHealth = (health) => {
       setHealthBar(health);

@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom';
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
 
-  const url = 'https://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
+  const url = 'http://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
 
   const setHealth = (health) => {
     setHealthBar(health);
