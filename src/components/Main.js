@@ -77,19 +77,34 @@ import { Link } from 'react-router-dom';
     setOptions(optionNames);
   };
 
+  const itemAdd = (item, playerName) => {
+    const itemInfo = {
+      username:playerName,
+      itemName:item
+    };
+
+    axios.post('https://branchtest-bkend.onrender.com/itemSearch', itemInfo)
+      .then(response => { 
+        let item = response.data;
+        console.log(item);
+      })
+      .catch(error => {
+       console.error('Error:', error);
+      });
+  };
+
   const triggerResult = (currentUser, result, prob) => {
-     console.log(result);
 
      if(stageType === 'location'){
        setCurStage(result);
      } else if(stageType === 'search'){
        let outcome = Math.floor(Math.random() * 100);
-
        const decideOutcome = (outcome) => {
         if (prob === 'easy'){
         if(outcome < 90){
          setShowResult('Success');
          setShowResultEvent('You have received a ' + result);
+         itemAdd(result, currentUser);
         // activate function that searches for result in DB
         // and sends to player's inventory
         } else {
@@ -100,6 +115,7 @@ import { Link } from 'react-router-dom';
         if(outcome > 90){
          setShowResult('Success' );
          setShowResultEvent('You have received a ' + result);
+         itemAdd(result, currentUser);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
@@ -108,12 +124,14 @@ import { Link } from 'react-router-dom';
         if(outcome > 50){
          setShowResult('Success');
          setShowResultEvent('You have received a ' + result);
+         itemAdd(result, currentUser);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
         }
         }
        };
+
        decideOutcome(outcome);
      }
   

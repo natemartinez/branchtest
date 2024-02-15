@@ -381,6 +381,23 @@ app.post('/currentStage', async (req, res) => {
     };
 });
 
+app.post('/itemSearch', async (req, res) => {
+    //search for item in DB
+    // if exists, then receive item and place
+    // player's inventory
+  const {itemName, username} = req.body;
+
+  console.log(itemName);
+  console.log(username);
+
+  try {
+    res.send({itemName})
+  } catch (err) {
+      console.error('Error', err);
+      res.status(500).json({ message: "An error has occurred" });
+  };
+});
+
 // Stage progression
 app.post('/stageChange', async (req, res) => {
     const {username, level, type} = req.body;
