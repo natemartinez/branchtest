@@ -78,6 +78,8 @@ import { Link } from 'react-router-dom';
   };
 
   const triggerResult = (currentUser, result, prob) => {
+     console.log(result);
+
      if(stageType === 'location'){
        setCurStage(result);
      } else if(stageType === 'search'){
@@ -88,6 +90,8 @@ import { Link } from 'react-router-dom';
         if(outcome < 90){
          setShowResult('Success');
          setShowResultEvent('You have received a ' + result);
+        // activate function that searches for result in DB
+        // and sends to player's inventory
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
@@ -141,7 +145,6 @@ import { Link } from 'react-router-dom';
 
      axios.post('https://branchtest-bkend.onrender.com/currentStage', userInfo)
       .then(response => { 
-        console.log(response.data)
         let options = response.data.options;
         let type = response.data.stageType;
         let curLevel = response.data.curStage;

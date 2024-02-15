@@ -14,7 +14,6 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(cors());
 
-
 const uri = 'mongodb+srv://natemartinez:Lj092101@players.m8tq7fu.mongodb.net/info?retryWrites=true&w=majority';
 async function connect() {
   try {
@@ -89,6 +88,7 @@ app.post('/sendUser', async (req, res) => {
   const username = req.body[0];
   const results = req.body[1];
 
+  // Initializes all of player's info
   let stats = {
     'Physical': {
       'strength': 1,
@@ -114,6 +114,8 @@ app.post('/sendUser', async (req, res) => {
     'health': 100
   };
   let progressStart = 1.1;
+
+  let inventory = [];
 
   results.forEach(result => {
     switch (result) {
@@ -153,15 +155,17 @@ app.post('/sendUser', async (req, res) => {
        break;
     } 
   });
+  
+  //
 
   try {
     let doc = await PlayerModel.findOne({ username: username.user });
     if (!doc) {
-      doc = new PlayerModel({ username: username.user, status:status, skills:skills, personality: results, stats: stats, progress: progressStart });
+      doc = new PlayerModel({ username: username.user, status:status, skills:skills, personality: results, stats: stats, inventory:inventory, progress: progressStart });
       await doc.save();
       res.status(200).json({ message: 'New document inserted successfully' });
     } else {
-      await PlayerModel.updateOne({ username: username.user }, { $set: {status:status, skills:skills, personality: results, stats: stats, progress: progressStart} });
+      await PlayerModel.updateOne({ username: username.user }, { $set: {status:status, skills:skills, personality: results, stats: stats, inventory:inventory, progress: progressStart} });
       res.status(200).json({ message: 'Document updated successfully', stats });
     }
   } catch (err) {
@@ -218,7 +222,7 @@ const Stages = [
                 type: 'Physical',
                 stat: 'strength',
                 difficulty: 1,
-                result: 'Jacket',
+                result: 'Jacket', //replace with database object
                 probability:''
               },
               {
@@ -355,7 +359,6 @@ app.post('/currentStage', async (req, res) => {
                 option.probability = 'medium';
                }
              });   
-             console.log(options)
              res.status(200).json({stageType, options, curStage});
            } else {
              res.status(200).json({stageType, options, curStage});
