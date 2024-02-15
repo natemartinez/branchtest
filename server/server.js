@@ -4,6 +4,7 @@ const cors = require('cors');
 const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
 const SkillModel = require('./models/skills');
+const ItemsModel = require('./models/items');
 const app = express();
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -387,8 +388,9 @@ app.post('/itemSearch', async (req, res) => {
     // player's inventory
   const {itemName, username} = req.body;
 
-  console.log(itemName);
-  console.log(username);
+  let doc = await ItemsModel.findOne({ name: itemName });
+
+  console.log('Found DOC: ', doc);
 
   try {
     res.send({itemName})
