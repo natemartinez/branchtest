@@ -85,7 +85,7 @@ import { Link } from 'react-router-dom';
       itemName:item
     };
 
-    axios.post('https://'+ url + '/itemSearch', itemInfo)
+    axios.post(url + '/itemSearch', itemInfo)
       .then(response => { 
         let item = response.data;
         console.log(item);
@@ -244,7 +244,7 @@ import { Link } from 'react-router-dom';
   );
  };
 
- const Menu = () => {
+ const Menu = ({playerName}) => {
  // Controls menu appearing and disappearing
    const [isVisible, setIsVisible] = useState(false);
    
@@ -263,10 +263,10 @@ import { Link } from 'react-router-dom';
      {isVisible && ( 
         <div className='main-menu'>
           <div className='menu-div'>
-            <Link to={'/bio'}>Bio</Link>
+            <Link to={'/bio'} state={playerName}>Bio</Link>
           </div>
           <div className='menu-div'>
-            <a href="pages/inventory.php">Inventory</a>
+          <Link to={'/inventory'} state={{username:playerName}}>Inventory</Link>
           </div>
           <div className='menu-div'>
             <a href="pages/skills.php">Skills</a>
@@ -286,10 +286,11 @@ import { Link } from 'react-router-dom';
  const Main = () => {
   const location = useLocation();
   let currentUser = location.state.username;
+  console.log(currentUser);
    return (
     <div>
-      <Game playerName={currentUser} />
-      <Menu/>
+      <Game playerName={currentUser}/>
+      <Menu playerName={currentUser}/>
     </div>
    );
  }

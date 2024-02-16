@@ -3,20 +3,30 @@ import '../style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
+const images = require.context('../../../public/images', true);
 // Placed hp here to display combat changes inside HUD
 
+  const Items = (player) => {
+    //receive items from DB
+    // but for now, make a mock array for items
+    const [items, setItems] = useState(['medkit', 'jacket', 'stick', 'dice']);
+    // iterate and display items
+   // console.log(player)
 
-  const Info = (playerName) => {
-    console.log(playerName);
-    
-    return (
-      <>
-      
-      </>
-    )
+      return (
+        <>
+          <div className='inv-grid'>
+            {items.map((element, index ) => (
+              <div key={index} className='item'>
+               <h2 key={index}>{element}</h2> 
+              </div>       
+             ))}
+          </div>
+        </>
+      )
   };
 
-  const Menu = () => {  
+  const Menu = () => {
   // Controls menu appearing and disappearing
     const [isVisible, setIsVisible] = useState(false);
     
@@ -38,7 +48,7 @@ import {useLocation} from 'react-router-dom';
              <Link to={'/bio'}>Bio</Link>
            </div>
            <div className='menu-div'>
-             <a href="pages/inventory.php">Inventory</a>
+           <Link to={'#'}>Inventory</Link>
            </div>
            <div className='menu-div'>
              <a href="pages/skills.php">Skills</a>
@@ -55,15 +65,20 @@ import {useLocation} from 'react-router-dom';
     );
   };
 
- const Bio = () => {
-    const location = useLocation();
-    let currentUser = location.state.username;
+ const Inventory = () => {
+  const location = useLocation();
+  let currentUser = location.state.username;
+  
    return (
-    <div>
-      <Info playerName={currentUser} />
-      <Menu />
-    </div>
+    <>
+      <div className='inv-top'>
+         <Link to={'/main'} state={{username:currentUser}}><img className='back-arrow' src={images(`./back-arrow.png`)}></img></Link>    
+        <h2>Inventory</h2>
+      </div>
+      <Items player={currentUser}/>
+      <Menu/>
+    </>
    );
  }
 
-export default Bio;
+export default Inventory;

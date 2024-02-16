@@ -84,7 +84,7 @@ app.post('/login', async (req, res) => {
   }
   
 });
-//Handles quiz results and intializes 'stats'
+//Handles quiz results and initializes 'stats'
 app.post('/sendUser', async (req, res) => {
   const username = req.body[0];
   const results = req.body[1];
@@ -175,8 +175,10 @@ app.post('/sendUser', async (req, res) => {
 
 app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
+  console.log(username);
 
   let doc = await PlayerModel.findOne({ username: username });
+  
 
   let physicalClass = doc.stats.Physical;
   let mentalClass = doc.stats.Mental;
@@ -389,13 +391,12 @@ app.post('/itemSearch', async (req, res) => {
 
   let itemDoc = await ItemsModel.findOne({ name: itemName });
   let playerDoc = await PlayerModel.findOne({ username: username });
-
-  console.log('Found Item: ', itemDoc);
-
-  playerDoc.inventory.push(itemDoc);
-
-  console.log('Player Inventory: ', playerDoc.inventory);
   
+  if(itemDoc){
+    playerDoc.inventory.push(itemDoc);
+  }
+
+  await PlayerModel.updateOne({ username: username }, { $set: {inventory: playerDoc.inventory} });
   try {
     res.send({itemName})
   } catch (err) {

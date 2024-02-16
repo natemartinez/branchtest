@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Question from './Question';
 import Result from './Result';
+import ReactLoading from "react-loading";
+
 const images = require.context('../../public/images', true);
 const logo = images(`./branchTest-logo.png`);
 
 const InfoForms = () => {
   const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-
+  const [showLogin, setShowLogin] = useState(false); 
   const url = 'http://localhost:3000';
-  
+
   const showRegisterForm = () => {
     setShowRegister(true);
     setShowLogin(false); // Hide login form
@@ -25,67 +26,86 @@ const InfoForms = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(null);
+    const [dataSent, setDataSent] = useState(null);
    
     const submit = (e) => {
        e.preventDefault();
-
        const newUser = {
         username,
         password,
-      };
+       };
+       // loading screen starts here
+       setDataSent(true);
 
       axios.post(url + '/signup', newUser)
-      .then(response => {
-       const { message } = response.data;
-       if (message === "User already exists") {
-        setMessage(message);
-        setFormSubmitted(false);  
-       } else {
-        console.log('Signup Complete');
-        setMessage(message);
-        setTimeout(() => { setFormSubmitted(true); }, 1000);
-       }
+      .then(response => {    
+        const { message } = response.data;
+        if (message === "User already exists") {
+         setMessage(message);
+         setDataSent(false);
+         setFormSubmitted(false)
+        } else {
+         console.log('Signup Complete');
+         setMessage(message);
+         setDataSent(false);
+         setFormSubmitted(true)
+        }
       })
       .catch(error => {
         console.error('Error:', error);
         setMessage('Signup failed!');
       });
     };
+
     return (
-        <div>
-           {!formSubmitted ? (
-            <div>
-              <div className='form-logo-div'>
-                <img className='form-logo' src={logo} alt="Description" /> 
-                <h1>Register</h1>
-                <p className='message'>{message}</p>
-              </div>
-    
-              <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
-              <input
-               type="text"
-               value={username}
-               onChange={(e) => setUsername(e.target.value)}
-               placeholder='Username'
+      <>
+        {!dataSent ? (
+          ''
+         ):(
+          <div className='loading-container'>
+            <ReactLoading
+            type={"bars"}
+            color={"#44342d"}
+            height={100}
+            width={100}
+            />
+          </div>
+         )
+        }
+
+        {!formSubmitted ? (
+         <div>
+          <div className='form-logo-div'>
+            <img className='form-logo' src={logo} alt="Description" /> 
+            <h1>Register</h1>
+            <p className='message'>{message}</p>
+          </div> 
+          <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder='Username'
+              required
+             />
+             <input
+               type="password"
+               value={password}
+               onChange={(e) => setPassword(e.target.value)}
+               placeholder='Password'
                required
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder='Password'
-                required
-              />
-              <button className='submit-btn' type="submit">Submit</button>
-              <button className='form-btn' onClick={showLoginForm}>Login</button>
-              </form>
-              
-            </div>
-           ) : (
+             />
+             <button className='submit-btn' type="submit">Submit</button>
+             <button className='form-btn' onClick={showLoginForm}>Login</button>
+          </form>
+         </div>
+            ): 
+           (
             <Quiz user={username}/>
-           )}
-        </div>
+           )
+         }
+      </>     
     )
   };
      
@@ -95,28 +115,28 @@ const InfoForms = () => {
     const [message, setMessage] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    
     const submit = (e) => {
+      //here's where it triggers loading screen
+      // by setting state
          e.preventDefault();
-        
+         
          const existingUser = {
            username,
            password,
          };
-       
+      
          axios.post(url + '/login', existingUser)
          .then(response => {
            console.log(response.data);
            const { message } = response.data;
-  
            if (message === "User doesn't exist") {
-             console.log('User does not exist');
              setMessage(message);
              setFormSubmitted(false);
-             
            } else {
              console.log('Login Successful');
              setMessage(message);
-             setTimeout(() => { setFormSubmitted(true); }, 1000);
+             setTimeout(() => {setFormSubmitted(true);}, 1000);
              navigate('/main', {state:{username}});
            }
          })
@@ -128,32 +148,39 @@ const InfoForms = () => {
     }
 
      return (
-        <div>           
+      <div>
+        {!formSubmitted ? (
+         <div>
           <div className='form-logo-div'>
-                <img className='form-logo' src={logo} alt="Description" /> 
-                <h1>Login</h1>
-                <p className='message'>{message}</p>
-          </div>
-          <form className='input-form' onSubmit={submit}>
-              <input
-               type="text"
-               value={username}
-               onChange={(e) => setUsername(e.target.value)}
-               placeholder='Username'
+            <img className='form-logo' src={logo} alt="Description" /> 
+            <h1>Login</h1>
+            <p className='message'>{message}</p>
+          </div> 
+          <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder='Username'
+              required
+             />
+             <input
+               type="password"
+               value={password}
+               onChange={(e) => setPassword(e.target.value)}
+               placeholder='Password'
                required
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder='Password'
-                required
-              />
-              <button className='submit-btn' type="submit">Submit</button>
-              
-          </form>  
-          <button className='form-btn' onClick={showRegisterForm}>Register</button>
-        </div>
+             />
+             <button className='submit-btn' type="submit">Submit</button>
+             <button className='form-btn' onClick={showRegisterForm}>Register</button>
+          </form>
+         </div>
+            ): 
+           (
+            <Quiz user={username}/>
+           )
+         }
+      </div>    
      )
   };
      
