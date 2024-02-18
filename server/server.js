@@ -162,6 +162,8 @@ app.post('/sendUser', async (req, res) => {
     if (!doc) {
       doc = new PlayerModel({ username: username.user, status:status, skills:skills, personality: results, stats: stats, inventory:inventory, progress: progressStart });
       await doc.save();
+      console.log(doc);
+      
       res.status(200).json({ message: 'New document inserted successfully' });
     } else {
       await PlayerModel.updateOne({ username: username.user }, { $set: {status:status, skills:skills, personality: results, stats: stats, inventory:inventory, progress: progressStart} });
