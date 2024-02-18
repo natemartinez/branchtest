@@ -13,8 +13,6 @@ const Result = (props) => {
   const finalResults = [username, data];
   const [stats, setStats] = useState([]);
 
-  const url = 'http://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
-
   useEffect(() => {
     const sendtoServer = (results) => {
       axios.post(url + '/sendUser', results)

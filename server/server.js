@@ -180,6 +180,7 @@ app.post('/buildSkills', async (req, res) => {
   let physicalClass = doc.stats.Physical;
   let mentalClass = doc.stats.Mental;
   let skillArray = [];
+  console.log(doc);
 
   if(doc){
     if(physicalClass.strength > 1){
