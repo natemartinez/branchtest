@@ -6,6 +6,7 @@ import Combat from './Combat';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
+import url from './config';
 
 // Placed hp here to display combat changes inside HUD
  const Game = ({playerName}) => {
@@ -18,8 +19,6 @@ import { Link } from 'react-router-dom';
   const [healthBar, setHealthBar] = useState(null);
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
-
-  const url = 'http://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
 
   const setHealth = (health) => {
     setHealthBar(health);
@@ -263,13 +262,13 @@ import { Link } from 'react-router-dom';
      {isVisible && ( 
         <div className='main-menu'>
           <div className='menu-div'>
-            <Link to={'/bio'} state={playerName}>Bio</Link>
+            <Link to={'/bio'} state={{username:playerName}}>Bio</Link>
           </div>
           <div className='menu-div'>
-          <Link to={'/inventory'} state={{username:playerName}}>Inventory</Link>
+            <Link to={'/inventory'} state={{username:playerName}}>Inventory</Link>
           </div>
           <div className='menu-div'>
-            <a href="pages/skills.php">Skills</a>
+          <Link to={'/skills'} state={{username:playerName}}>Skills</Link>
           </div>                
           <div className='menu-div'>
             <a href="pages/goals.php">Goals</a>

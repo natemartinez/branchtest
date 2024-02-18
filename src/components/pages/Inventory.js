@@ -1,32 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import '../style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
+import url from '../config';
 const images = require.context('../../../public/images', true);
 // Placed hp here to display combat changes inside HUD
 
-  const Items = (player) => {
-    //receive items from DB
-    // but for now, make a mock array for items
-    const [items, setItems] = useState(['medkit', 'jacket', 'stick', 'dice']);
-    // iterate and display items
-   // console.log(player)
+  const Items = ({playerName}) => {
+    const [items, setItems] = useState([]);
+
+    const getItems = () => {
+      let userInfo = {
+        username:playerName
+      };
+
+      axios.post(url + '/receiveInv', userInfo)
+       .then(response => { 
+        let userItems = response.data.playerItems;
+        setItems(userItems);
+       })
+       .catch(error => {
+       console.error('Error:', error);
+       });
+    };
+
+    useEffect(() => {
+       getItems(items);
+    }, []);
+
+    // need to iterate thru items state
 
       return (
         <>
           <div className='inv-grid'>
-            {items.map((element, index ) => (
-              <div key={index} className='item'>
-               <h2 key={index}>{element}</h2> 
-              </div>       
-             ))}
+            {items.map((element, index) => (
+              <div key={index} id={element.rarity} className='item'>
+                <img src={images(`./${element.name}.png`)} alt="" className='item-img'></img>
+                <h3>{element.name}</h3>
+                <p>{element.effect}</p>
+                <p>{element.type}: {element.num}</p>
+              </div> 
+            ))}
           </div>
         </>
       )
   };
 
-  const Menu = () => {
+  const Menu = ({playerName}) => {
   // Controls menu appearing and disappearing
     const [isVisible, setIsVisible] = useState(false);
     
@@ -45,13 +67,13 @@ const images = require.context('../../../public/images', true);
       {isVisible && ( 
          <div className='main-menu'>
            <div className='menu-div'>
-             <Link to={'/bio'}>Bio</Link>
+             <Link to={'/bio'} state={{username:playerName}}>Bio</Link>
            </div>
            <div className='menu-div'>
-           <Link to={'#'}>Inventory</Link>
+             <Link to={'#'} onClick={() => menuHide()} state={{username:playerName}}>Inventory</Link>
            </div>
            <div className='menu-div'>
-             <a href="pages/skills.php">Skills</a>
+             <Link to={'/skills'} state={{username:playerName}}>Skills</Link>
            </div>                
            <div className='menu-div'>
              <a href="pages/goals.php">Goals</a>
@@ -68,15 +90,14 @@ const images = require.context('../../../public/images', true);
  const Inventory = () => {
   const location = useLocation();
   let currentUser = location.state.username;
-  
    return (
     <>
       <div className='inv-top'>
          <Link to={'/main'} state={{username:currentUser}}><img className='back-arrow' src={images(`./back-arrow.png`)}></img></Link>    
         <h2>Inventory</h2>
       </div>
-      <Items player={currentUser}/>
-      <Menu/>
+      <Items playerName={currentUser}/>
+      <Menu playerName={currentUser}/>
     </>
    );
  }

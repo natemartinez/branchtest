@@ -221,7 +221,6 @@ body{
     width: 15em;
 }
 
-
 .result-btn{
     width: 8em;
     height: 3em;
@@ -269,8 +268,8 @@ body{
 }
 
 .stat-bkgrd{
-    width: 5em;
-    height: 5.5em;
+    width: 3em;
+    height: 3em;
     z-index: 1;
     position: absolute;
     left: 0;
@@ -333,7 +332,7 @@ body{
     font-size: 3.5em;
     justify-content: space-evenly;
     background-color: black;
-    
+    z-index: 2;
     width: 100%;
     align-items: center;
 }
@@ -343,7 +342,7 @@ body{
 }
 
 .open-menu-div{
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     left: 0;
@@ -580,7 +579,72 @@ body{
     height: 10em;
     width: 10em;
     border: 2px solid black;
+    font-size: 1.2em;
+}
+.item-img{
+    width: 3em;
 }
 .back-arrow{
     width: 5em;
+}
+
+/* Bio Screen */
+.bio-top{
+    position: relative;
+    top: 1em;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-bottom: 3em;
+}
+
+/* Skill Screen */
+#skill-sec{
+    display: flex;
+    position: relative;
+    margin-top: 3em;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.skill-div{
+    width: 100%;
+    padding: 0.5em;
+    text-align: center;
+    font-size: 2.5em;
+    height: 5em;
+    color: black;
+    border: 2px solid black;
+}
+
+.skill-bkgrd{
+    width: 3em;
+    height: 3em;
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    opacity: 20%;
+  }
+
+@media screen and (min-width: 480px) {
+  #skill-sec{
+    width: 70vw;
+    justify-content: center;
+  }
+  .skill-div{
+    height: 10em;
+  }
+  .skill-bkgrd{
+    width: 5em;
+    height: 5em;
+    z-index: 1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    opacity: 10%;
+    margin-top:7vh;
+  }
 }

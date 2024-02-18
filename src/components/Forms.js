@@ -4,6 +4,7 @@ import axios from 'axios';
 import Question from './Question';
 import Result from './Result';
 import ReactLoading from "react-loading";
+import url from './config';
 
 const images = require.context('../../public/images', true);
 const logo = images(`./branchTest-logo.png`);
@@ -11,7 +12,6 @@ const logo = images(`./branchTest-logo.png`);
 const InfoForms = () => {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false); 
-  const url = 'http://localhost:3000';
 
   const showRegisterForm = () => {
     setShowRegister(true);

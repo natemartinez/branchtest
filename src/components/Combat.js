@@ -3,6 +3,7 @@ import axios from 'axios';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProgressBar } from 'react-bootstrap';
+import url from './config';
 const images = require.context('../../public/images', true);
 
 const Combat = ({level, username, playerHealth}) => {
@@ -15,8 +16,6 @@ const Combat = ({level, username, playerHealth}) => {
     const [selectedAttack, setSelectedAttack] = useState(null);
     const [userTurn, setUserTurn] = useState(true);
     const [healthBar, setHealthBar] = useState(null);
-
-    const url = 'http://localhost:3000'; // deploy URL:branchtest-bkend.onrender.com 
 
     const setHealth = (health) => {
       setHealthBar(health);
@@ -159,8 +158,7 @@ const Combat = ({level, username, playerHealth}) => {
           newText("Enemy's Turn")
           setTimeout(() => enemyTurn(healthBar), 1500);
           setTimeout(() => newText('Ghost slapped you!'), 3000);
-          setTimeout(() => newText("What's your move?"), 5000);
-          
+          setTimeout(() => newText("What's your move?"), 5000);   
         }
 
     }, [userTurn, attackBegin]);

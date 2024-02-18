@@ -175,11 +175,8 @@ app.post('/sendUser', async (req, res) => {
 
 app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
-  console.log(username);
 
   let doc = await PlayerModel.findOne({ username: username });
-  
-
   let physicalClass = doc.stats.Physical;
   let mentalClass = doc.stats.Mental;
   let skillArray = [];
@@ -390,12 +387,10 @@ app.post('/itemSearch', async (req, res) => {
   const {itemName, username} = req.body;
 
   let itemDoc = await ItemsModel.findOne({ name: itemName });
-  let playerDoc = await PlayerModel.findOne({ username: username });
-  
+  let playerDoc = await PlayerModel.findOne({ username: username }); 
   if(itemDoc){
     playerDoc.inventory.push(itemDoc);
   }
-
   await PlayerModel.updateOne({ username: username }, { $set: {inventory: playerDoc.inventory} });
   try {
     res.send({itemName})
@@ -403,6 +398,19 @@ app.post('/itemSearch', async (req, res) => {
       console.error('Error', err);
       res.status(500).json({ message: "An error has occurred" });
   };
+});
+
+app.post('/receiveInv', async (req, res) => {
+  const {username} = req.body;
+  let doc = await PlayerModel.findOne({ username: username });
+  
+  let playerItems = doc.inventory;
+try {
+  res.send({playerItems})
+} catch (err) {
+    console.error('Error', err);
+    res.status(500).json({ message: "An error has occurred" });
+};
 });
 
 // Stage progression

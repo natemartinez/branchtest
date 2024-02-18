@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import '../style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -6,25 +7,55 @@ import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
 import url from '../config';
 const images = require.context('../../../public/images', true);
-// Placed hp here to display combat changes inside HUD
+
+
   const Info = ({ playerName }) => {
-    // search in DB for player's info
-    // show name, traits, stats, 
+    // This component is where skills are activated and grown
+    const [skills, setSkills] = useState([]);
 
-    const testData = [
-      { bgcolor: "#6a1b9a", completed: 60 },
-      { bgcolor: "#00695c", completed: 30 },
-      { bgcolor: "#ef6c00", completed: 53 },
-    ];
+    let userInfo = {
+      username: playerName
+    };
 
+    const getSkills = () => {
+     axios.post(url + '/buildSkills', userInfo)
+      .then(response => { 
+       let userSkills = response.data.doc.stats;
+       setSkills(userSkills);
+      })
+      .catch(error => {
+      console.error('Error:', error);
+      });
+    };
+    
+    useEffect(() => {
+      getSkills(skills)
+    }, [])
+  
     return (
       <>
-        <div>
-         {testData.map((item, index) => (
-         <ProgressBar key={index} bgcolor={item.bgcolor} now={item.completed} />
-         ))
-         }
+      <div id='skill-sec'>
+        <div className='skill-div' id='phys-div'>
+           <img className='skill-bkgrd' src={images(`./Physical.png`)} alt="icon"></img>
+           <h2>Physical</h2>
+           <div className='skill-boxes'>
+            
+           </div>
         </div>
+        <div className='skill-div' id='ment-div'>
+           <img className='skill-bkgrd' src={images(`./Mental.png`)} alt="icon"></img>
+           <h2>Mental</h2>
+        </div>
+        <div className='skill-div' id='soul-div'>
+           <img className='skill-bkgrd' src={images(`./Soul.png`)} alt="icon"></img>
+           <h2>Soul</h2>
+        </div>
+        <div className='skill-div' id='exp-div'>
+           <img className='skill-bkgrd' src={images(`./Expression.png`)} alt="icon"></img>
+           <h2>Expression</h2>
+        </div>
+      </div>
+        
       </>
     )
   };
@@ -54,7 +85,7 @@ const images = require.context('../../../public/images', true);
              <Link to={'/inventory'} state={{username:playerName}}>Inventory</Link>
            </div>
            <div className='menu-div'>
-             <Link to={'/skills'} state={{username:playerName}}>Skills</Link>
+             <Link onClick={() => menuHide()} state={{username:playerName}}>Skills</Link>
            </div>                
            <div className='menu-div'>
              <a href="pages/goals.php">Goals</a>
@@ -68,14 +99,15 @@ const images = require.context('../../../public/images', true);
     );
   };
 
- const Bio = () => {
+ const Skills = () => {
     const location = useLocation();
     let currentUser = location.state.username;
+    
    return (
     <div>
       <div className='bio-top'>
          <Link to={'/main'} state={{username:currentUser}}><img className='back-arrow' src={images(`./back-arrow.png`)}></img></Link>    
-        <h2>Bio</h2>
+        <h2>Skills</h2>
       </div>
       <Info playerName={currentUser} />
       <Menu playerName={currentUser}/>
@@ -83,4 +115,4 @@ const images = require.context('../../../public/images', true);
    );
  }
 
-export default Bio;
+export default Skills;
