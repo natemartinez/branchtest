@@ -4,7 +4,7 @@ import '../style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
-import url from '../config';
+import serverUrl from '../config';
 const images = require.context('../../../public/images', true);
 // Placed hp here to display combat changes inside HUD
 
@@ -16,7 +16,7 @@ const images = require.context('../../../public/images', true);
         username:playerName
       };
 
-      axios.post(url + '/receiveInv', userInfo)
+      axios.post(serverUrl + '/receiveInv', userInfo)
        .then(response => { 
         let userItems = response.data.playerItems;
         setItems(userItems);

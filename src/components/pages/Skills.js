@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
-import url from '../config';
+import serverUrl from '../config';
 const images = require.context('../../../public/images', true);
 
 
@@ -18,7 +18,7 @@ const images = require.context('../../../public/images', true);
     };
 
     const getSkills = () => {
-     axios.post(url + '/buildSkills', userInfo)
+     axios.post(serverUrl + '/buildSkills', userInfo)
       .then(response => { 
        let userSkills = response.data.doc.stats;
        setSkills(userSkills);

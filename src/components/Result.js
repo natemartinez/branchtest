@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import url from './config';
+import serverUrl from './config';
 const images = require.context('../../public/images', true);
 
 // This component will output personality results
@@ -15,7 +15,7 @@ const Result = (props) => {
 
   useEffect(() => {
     const sendtoServer = (results) => {
-      axios.post(url + '/sendUser', results)
+      axios.post(serverUrl + '/sendUser', results)
         .then(response => {
           let statResults = response.data.stats;
           setStats(statResults);

@@ -3,7 +3,7 @@ import axios from 'axios';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProgressBar } from 'react-bootstrap';
-import url from './config';
+import serverUrl from './config';
 const images = require.context('../../public/images', true);
 
 const Combat = ({level, username, playerHealth}) => {
@@ -27,7 +27,7 @@ const Combat = ({level, username, playerHealth}) => {
         username:username
       };
   
-      axios.post(url + '/buildSkills', userInfo)
+      axios.post(serverUrl + '/buildSkills', userInfo)
         .then(response => { 
           let hpData = response.data.doc.status;
           setHealth(hpData.health)
@@ -47,7 +47,7 @@ const Combat = ({level, username, playerHealth}) => {
       };
 
       try {
-         const response = await axios.post(url + '/combatStart', curLevel);
+         const response = await axios.post(serverUrl + '/combatStart', curLevel);
          let enemies = response.data.enemies;
          setCurEnemies(Object.values(enemies));
       } catch (error) {
@@ -68,7 +68,7 @@ const Combat = ({level, username, playerHealth}) => {
       };
 
       try {
-         const response = await axios.post(url + '/receiveSkills', optionObj);
+         const response = await axios.post(serverUrl + '/receiveSkills', optionObj);
          let data = response.data.userSkills;
          setOptions(data);
       } catch (error) {
@@ -91,7 +91,7 @@ const Combat = ({level, username, playerHealth}) => {
       };
 
       try {
-        const response = await axios.post(url + '/enemyAttack', enemyInfo);
+        const response = await axios.post(serverUrl + '/enemyAttack', enemyInfo);
         const updatedHP = response.data.newPlayerHP;
         setHealth(updatedHP);
         setUserTurn(true);
@@ -110,7 +110,7 @@ const Combat = ({level, username, playerHealth}) => {
             enemy: curEnemies[enemyIndex],
           };
           try {
-             const response = await axios.post(url + '/attackAction', curAttack);
+             const response = await axios.post(serverUrl + '/attackAction', curAttack);
              let attackResult = response.data.attackEvent;
              curEnemiesUpdate[enemyIndex] = attackResult.enemy;
              setCurEnemies(curEnemiesUpdate);
@@ -118,13 +118,10 @@ const Combat = ({level, username, playerHealth}) => {
              console.error('Error:', error);
           }
         }
-
         getAttack(option);
         setAttackBegin(false);
         setSelectedEnemy(null);
-
-        setUserTurn(false);
-        
+        setUserTurn(false);  
       } else{
         console.log('must choose enemy first');
       }

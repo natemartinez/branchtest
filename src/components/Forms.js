@@ -4,7 +4,7 @@ import axios from 'axios';
 import Question from './Question';
 import Result from './Result';
 import ReactLoading from "react-loading";
-import url from './config';
+import serverUrl from './config';
 
 const images = require.context('../../public/images', true);
 const logo = images(`./branchTest-logo.png`);
@@ -38,7 +38,7 @@ const InfoForms = () => {
        // loading screen starts here
        setDataSent(true);
 
-      axios.post(url + '/signup', newUser)
+      axios.post(serverUrl + '/signup', newUser)
       .then(response => {    
         const { message } = response.data;
         if (message === "User already exists") {
@@ -120,13 +120,12 @@ const InfoForms = () => {
       //here's where it triggers loading screen
       // by setting state
          e.preventDefault();
-         
          const existingUser = {
            username,
            password,
          };
       
-         axios.post(url + '/login', existingUser)
+         axios.post(serverUrl + '/login', existingUser)
          .then(response => {
            console.log(response.data);
            const { message } = response.data;

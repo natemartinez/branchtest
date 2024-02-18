@@ -1,3 +1,3 @@
-const url = 'http://branchtest-bkend.onrender.com';
+const serverUrl = 'http://branchtest-bkend.onrender.com';
 
-export default url
+export default serverUrl

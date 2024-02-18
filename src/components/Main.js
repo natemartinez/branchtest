@@ -6,7 +6,7 @@ import Combat from './Combat';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
-import url from './config';
+import serverUrl from './config';
 
 // Placed hp here to display combat changes inside HUD
  const Game = ({playerName}) => {
@@ -30,7 +30,7 @@ import url from './config';
       username:username
     };
 
-    axios.post(url + '/buildSkills', userInfo)
+    axios.post(serverUrl + '/buildSkills', userInfo)
       .then(response => { 
         let hpData = response.data.doc.status;
         setHealth(hpData.health)
@@ -84,7 +84,7 @@ import url from './config';
       itemName:item
     };
 
-    axios.post(url + '/itemSearch', itemInfo)
+    axios.post(serverUrl + '/itemSearch', itemInfo)
       .then(response => { 
         let item = response.data;
         console.log(item);
@@ -145,7 +145,7 @@ import url from './config';
       username:currentUser
     };
 
-     axios.post(url + '/buildSkills', userInfo)
+     axios.post(serverUrl + '/buildSkills', userInfo)
       .then(response => { 
         let skills = response.data.doc;
         //console.log(skills)
@@ -162,7 +162,7 @@ import url from './config';
       username: currentUser
      };
 
-     axios.post(url + '/currentStage', userInfo)
+     axios.post(serverUrl + '/currentStage', userInfo)
       .then(response => { 
         let options = response.data.options;
         let type = response.data.stageType;
@@ -186,7 +186,7 @@ import url from './config';
         type: type
       };
 
-      axios.post(url + '/stageChange', stageInfo)
+      axios.post(serverUrl + '/stageChange', stageInfo)
       .then(response => {
         console.log(response.data);
       })
