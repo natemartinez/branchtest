@@ -150,29 +150,28 @@ const InfoForms = () => {
       <div>
         {!formSubmitted ? (
          <div>
-          <div className='form-logo-div'>
-            <img className='form-logo' src={logo} alt="Description" /> 
-            <h1>Login</h1>
-            <p className='message'>{message}</p>
-          </div> 
-          <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
-            <input
-              type="text"
+           <div className='form-login'>
+             <h1>Login</h1>
+             <p className='message'>{message}</p>
+             <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
+               <input
+                 type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder='Username'
               required
-             />
-             <input
-               type="password"
+                />
+                <input
+                  type="password"
                value={password}
                onChange={(e) => setPassword(e.target.value)}
                placeholder='Password'
                required
-             />
-             <button className='submit-btn' type="submit">Submit</button>
-             <button className='form-btn' onClick={showRegisterForm}>Register</button>
-          </form>
+                />
+                <button className='submit-btn' type="submit">Submit</button>
+                <button className='form-btn' onClick={showRegisterForm}>Register</button>
+             </form>
+           </div> 
          </div>
             ): 
            (
