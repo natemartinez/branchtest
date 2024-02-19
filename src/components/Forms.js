@@ -111,7 +111,8 @@ const InfoForms = () => {
      
   const Login = () => {
     const navigate = useNavigate();
-    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [formSubmitted, setFormSubmitted] = useState(null);
+    const [dataSent, setDataSent] = useState(null);
     const [message, setMessage] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -124,18 +125,26 @@ const InfoForms = () => {
            username,
            password,
          };
+
+         setDataSent(true);
       
          axios.post(serverUrl + '/login', existingUser)
          .then(response => {
-           console.log(response.data);
-           const { message } = response.data;
+           const { message, currentUser } = response.data;
+           if(!currentUser.hasOwnProperty('progress')){
+             // if the user didn't complete test
+             // send back to test
+             setFormSubmitted(true);
+             return;
+           };
            if (message === "User doesn't exist") {
              setMessage(message);
              setFormSubmitted(false);
+             setDataSent(false);
            } else {
-             console.log('Login Successful');
              setMessage(message);
              setTimeout(() => {setFormSubmitted(true);}, 1000);
+             setDataSent(false);
              navigate('/main', {state:{username}});
            }
          })

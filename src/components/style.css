@@ -147,14 +147,16 @@ body{
     position: absolute;
     z-index: 2;
     width: 20em;
-    height: 30em;
-    background-color: darkgrey;
+    height: 35em;
+    background-color: #343a40;
     margin-top: 10vh;
     text-align: center;
     border-radius: 10px;
+    padding-top: 4em;
 }
 .intro-text{
     font-size: 1.5em;
+    color: antiquewhite;
 }
 .intro-text h1{
     font-size: 1.7em;  
@@ -166,6 +168,7 @@ body{
     border-radius: 10px;
     background-color: antiquewhite;
     color: #44342d;
+    margin-top: 1em;
 }
 
 .quiz-div{
