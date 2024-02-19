@@ -205,7 +205,8 @@ const InfoForms = () => {
 };
 
 const Quiz = (username) => {
-  const currentUser = username;
+  const [currentQuestion, setQuestion] = useState(0);
+  const [intro, setIntro] = useState(true);
   const quizData = [
     {
       question: 'Which side of your brain do you use more of?',
@@ -223,11 +224,10 @@ const Quiz = (username) => {
       question: 'Whats your temper like?',
       options: ['Fierce', 'Steady'],
     }
-  ]
-
-  const [currentQuestion, setQuestion] = useState(0);
+  ];
   const [userAnswers, setUserAnswers] = useState(Array(quizData.length).fill(' '));
-
+  const currentUser = username;
+  
   const handleAnswerSelect = (answer) => {
       // Need to set a new copy of array to update
       const updatedAnswers = [...userAnswers];
@@ -238,9 +238,26 @@ const Quiz = (username) => {
   const goToNextQuestion = () => {
     setQuestion(currentQuestion + 1);
   }; 
+
+  const showSquare = (bool) => {
+      setIntro(bool);
+  };
   
   return (
-    <div>
+    <div className='intro-div'>
+      {!intro ? (
+        ''
+      ) : (
+        <div className='intro-square'>
+          <div className='intro-text'>
+            <h1>This is the BranchTest.</h1>
+            <p>A personality-based RPG, where your best weapon is discovering yourself.</p>
+            <p>You will take a test to determine your personality.</p>
+          </div> 
+          <button onClick={() => showSquare(false)} id='close-square' type="submit">Begin</button>
+        </div>
+      )}
+
       {currentQuestion < quizData.length ? (
         <Question
           data={quizData[currentQuestion]}

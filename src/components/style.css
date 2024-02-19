@@ -139,6 +139,35 @@ body{
 }
 
 /*Quiz Screen*/
+.intro-div{
+    display: flex;
+    justify-content: center;
+}
+.intro-square{
+    position: absolute;
+    z-index: 2;
+    width: 20em;
+    height: 30em;
+    background-color: darkgrey;
+    margin-top: 10vh;
+    text-align: center;
+    border-radius: 10px;
+}
+.intro-text{
+    font-size: 1.5em;
+}
+.intro-text h1{
+    font-size: 1.7em;  
+}
+#close-square{
+    width: 8em;
+    height: 3em;
+    font-size: 1.5em;
+    border-radius: 10px;
+    background-color: antiquewhite;
+    color: #44342d;
+}
+
 .quiz-div{
     display: flex;
     flex-direction: column;
@@ -337,6 +366,13 @@ body{
 }
   
 /*Game Screen*/
+.game-text{
+    display: flex;
+    justify-content: center;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
 .main-menu{
     display: flex;
     position:fixed;

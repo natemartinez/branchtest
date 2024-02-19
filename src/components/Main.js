@@ -12,10 +12,12 @@ import serverUrl from './config';
  const Game = ({playerName}) => {
   // count receives level number from player info
   const [stageType, setStageType] = useState(null);
+  const [intro, setIntro] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showResultEvent, setShowResultEvent] = useState(false);
   const [options, setOptions] = useState([]);
   const [curStage, setCurStage] = useState('');
+  const [curText, setCurText] = useState('');
   const [healthBar, setHealthBar] = useState(null);
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
@@ -33,8 +35,7 @@ import serverUrl from './config';
     axios.post(serverUrl + '/receiveStatus', userInfo)
       .then(response => { 
         let hpData = response.data.doc.status;
-        console.log(hpData)
-       // setHealth(hpData.health)
+        setHealth(hpData.health)
       })
       .catch(error => {
        console.error('Error:', error);
@@ -139,17 +140,17 @@ import serverUrl from './config';
   
   };
 
-  async function buildSkills(currentUser) {
+  async function buildAttacks(currentUser) {
     // This function will return the currentStage data
     // which will send to Levels to iterate over it
     let userInfo = {
       username:currentUser
     };
 
-     axios.post(serverUrl + '/buildSkills', userInfo)
+     axios.post(serverUrl + '/buildAttacks', userInfo)
       .then(response => { 
         let skills = response.data.doc;
-        //console.log(skills)
+        console.log(skills)
       })
       .catch(error => {
        console.error('Error:', error);
@@ -168,6 +169,11 @@ import serverUrl from './config';
         let options = response.data.options;
         let type = response.data.stageType;
         let curLevel = response.data.curStage;
+        let curText = response.data.curStageText;
+        if(curLevel === 1.1){
+          setIntro(true)
+        }
+        setCurText(curText);
         setStageType(type);
         displayOptions(type, options, curLevel);
       })
@@ -198,8 +204,12 @@ import serverUrl from './config';
      getLevel(currentUser);
   }
 
+  const endIntro = (bool) => {
+    setIntro(bool)
+  };
+
   useEffect(() => {
-    buildSkills(playerName);
+    buildAttacks(playerName);
     getLevel(playerName);
   }, []);
 
@@ -209,13 +219,17 @@ import serverUrl from './config';
 
   return (
     <div> 
-      <div className='HUD'>
+      {!intro ? (
+        <>
+         <div className='HUD'>
          <h2>{playerName}</h2>
          <h3 id='level-num'>Level: {curStage}</h3>
          <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>
-      </div>
-
-      <div className='game-options'>
+         </div>
+         <div className='game-text'>
+          <p>{curText}</p>
+         </div>  
+         <div className='game-options'>
         {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth}/> : 
         <div className='option-container'> 
          {options.map((option, index) => (
@@ -239,9 +253,18 @@ import serverUrl from './config';
          <button onClick={() => nextLevel(playerName, curStage, stageType)} id='next-btn'>Next</button>
         </div>
         }
-      </div>
+         </div>
+        </> 
+      ) 
+        : (
+       <div className='intro'>
+        <h1>TUTORIAL</h1>
+        <button onClick={endIntro(false)} type="submit"></button>
+       </div>
+       )}   
     </div>
   );
+
  };
 
  const Menu = ({playerName}) => {
@@ -286,7 +309,6 @@ import serverUrl from './config';
  const Main = () => {
   const location = useLocation();
   let currentUser = location.state.username;
-  console.log(currentUser);
    return (
     <div>
       <Game playerName={currentUser}/>

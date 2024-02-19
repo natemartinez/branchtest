@@ -108,9 +108,7 @@ app.post('/sendUser', async (req, res) => {
       'presence': 1
     }
   };
-
   let skills = [];
-
   let status = {
     'health': 100
   };
@@ -210,7 +208,7 @@ app.post('/buildAttacks', async (req, res) => {
 const Stages = [
       {
           name: 'search1',
-          text: 'hello',        
+          text: 'It seems the game has begun...',        
           stageInfo: {
              level:1.1,
              type: 'search',
@@ -334,6 +332,9 @@ app.post('/currentStage', async (req, res) => {
     async function buildOptions(level, playerStats){
       for (let i = 0; i < Stages.length; i++) {
         let curStageInfo = Stages[i].stageInfo;
+        let curStageText = Stages[i].text;
+        
+
         if (curStageInfo.level === level) {
           let stageType = curStageInfo.type;
           let options = curStageInfo.options;
@@ -355,9 +356,9 @@ app.post('/currentStage', async (req, res) => {
                 option.probability = 'medium';
                }
              });   
-             res.status(200).json({stageType, options, curStage});
+             res.status(200).json({stageType, options, curStage, curStageText});
            } else {
-             res.status(200).json({stageType, options, curStage});
+             res.status(200).json({stageType, options, curStage, curStageText});
            };
           break;
         }
@@ -381,7 +382,6 @@ app.post('/currentStage', async (req, res) => {
 app.post('/receiveStatus', async (req, res) => {
   const {username} = req.body;
   let doc = await PlayerModel.findOne({ username: username });
-  console.log(doc);
   try {
     res.status(200).send({doc});
   } catch (err) {
