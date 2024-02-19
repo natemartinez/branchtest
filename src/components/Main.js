@@ -30,10 +30,11 @@ import serverUrl from './config';
       username:username
     };
 
-    axios.post(serverUrl + '/buildSkills', userInfo)
+    axios.post(serverUrl + '/receiveStatus', userInfo)
       .then(response => { 
         let hpData = response.data.doc.status;
-        setHealth(hpData.health)
+        console.log(hpData)
+       // setHealth(hpData.health)
       })
       .catch(error => {
        console.error('Error:', error);
@@ -210,7 +211,7 @@ import serverUrl from './config';
     <div> 
       <div className='HUD'>
          <h2>{playerName}</h2>
-     
+         <h3 id='level-num'>Level: {curStage}</h3>
          <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>
       </div>
 

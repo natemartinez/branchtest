@@ -6,6 +6,7 @@ const playerSchema = new mongoose.Schema({
     status: Object,
     personality: Array,
     stats: Object,
+    attacks: Array,
     skills: Array,
     inventory: Array,
     progress: Number,
