@@ -118,8 +118,6 @@ const InfoForms = () => {
     const [password, setPassword] = useState('');
     
     const submit = (e) => {
-      //here's where it triggers loading screen
-      // by setting state
          e.preventDefault();
          const existingUser = {
            username,
@@ -131,21 +129,21 @@ const InfoForms = () => {
          axios.post(serverUrl + '/login', existingUser)
          .then(response => {
            const { message, currentUser } = response.data;
-           if(!currentUser.hasOwnProperty('progress')){
-             // if the user didn't complete test
-             // send back to test
-             setFormSubmitted(true);
-             return;
-           };
+           
            if (message === "User doesn't exist") {
              setMessage(message);
              setFormSubmitted(false);
              setDataSent(false);
            } else {
-             setMessage(message);
-             setTimeout(() => {setFormSubmitted(true);}, 1000);
-             setDataSent(false);
-             navigate('/main', {state:{username}});
+              if(!currentUser.hasOwnProperty('progress')){  
+               setFormSubmitted(true);
+               return;
+              } else{
+                setMessage(message);
+                setTimeout(() => {setFormSubmitted(true);}, 1000);
+                setDataSent(false);
+                navigate('/main', {state:{username}});
+              }        
            }
          })
          .catch(error => {
@@ -155,7 +153,7 @@ const InfoForms = () => {
          });
     }
 
-     return (
+    return (
       <div>
         {!formSubmitted ? (
          <div>
@@ -188,7 +186,7 @@ const InfoForms = () => {
            )
          }
       </div>    
-     )
+    )
   };
      
   return (
@@ -253,12 +251,12 @@ const Quiz = (username) => {
   };
   
   return (
-    <div className='intro-div'>
+    <div className='info-div'>
       {!intro ? (
         ''
       ) : (
-        <div className='intro-square'>
-          <div className='intro-text'>
+        <div className='info-square'>
+          <div className='info-text'>
             <h1>This is the BranchTest.</h1>
             <p>A personality-based RPG, where your best weapon is discovering yourself.</p>
             <p>You will take a test to determine your personality.</p>

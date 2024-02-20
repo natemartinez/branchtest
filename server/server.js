@@ -208,7 +208,14 @@ app.post('/buildAttacks', async (req, res) => {
 const Stages = [
       {
           name: 'search1',
-          text: 'It seems the game has begun...',        
+          text:
+          "<h2>In the BranchTest, your personality affects the success and outcomes of your decisions</h2>" +
+          "<div class='choice-diagram'>" +
+             
+            "<div class='diff-div'><img class='diff-exp' src='images/easy.png'></img><h2> = Easy</h2></div>" +
+            "<div class='diff-div'><img class='diff-exp' src='images/medium.png'></img><h3> = Medium</h3></div>" +
+            "<div class='diff-div'><img class='diff-exp' src='images/hard.png'></img><h3> = Hard</h3></div>" +
+          "</div>",        
           stageInfo: {
              level:1.1,
              type: 'search',
@@ -333,7 +340,6 @@ app.post('/currentStage', async (req, res) => {
       for (let i = 0; i < Stages.length; i++) {
         let curStageInfo = Stages[i].stageInfo;
         let curStageText = Stages[i].text;
-        
 
         if (curStageInfo.level === level) {
           let stageType = curStageInfo.type;

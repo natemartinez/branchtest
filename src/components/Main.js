@@ -7,20 +7,22 @@ import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import serverUrl from './config';
+const images = require.context('../../public/images', true);
 
 // Placed hp here to display combat changes inside HUD
  const Game = ({playerName}) => {
   // count receives level number from player info
   const [stageType, setStageType] = useState(null);
-  const [intro, setIntro] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [showResultEvent, setShowResultEvent] = useState(false);
   const [options, setOptions] = useState([]);
-  const [curStage, setCurStage] = useState('');
+  const [curStage, setCurStage] = useState(null);
+  const [showText, setShowText] = useState(null);
   const [curText, setCurText] = useState('');
   const [healthBar, setHealthBar] = useState(null);
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
+  let infoText = '';
 
   const setHealth = (health) => {
     setHealthBar(health);
@@ -169,11 +171,12 @@ import serverUrl from './config';
         let options = response.data.options;
         let type = response.data.stageType;
         let curLevel = response.data.curStage;
-        let curText = response.data.curStageText;
-        if(curLevel === 1.1){
-          setIntro(true)
+        let stageText = response.data.curStageText;
+        if(stageText){
+          setShowText(true);
         }
-        setCurText(curText);
+        setCurStage(curLevel);
+        setCurText(stageText);
         setStageType(type);
         displayOptions(type, options, curLevel);
       })
@@ -204,8 +207,8 @@ import serverUrl from './config';
      getLevel(currentUser);
   }
 
-  const endIntro = (bool) => {
-    setIntro(bool)
+  const showSquare = (bool) => {
+    setShowText(bool);
   };
 
   useEffect(() => {
@@ -213,22 +216,32 @@ import serverUrl from './config';
     getLevel(playerName);
   }, []);
 
-  useEffect(() => {
-  }, [stageType]);
-
 
   return (
     <div> 
-      {!intro ? (
         <>
          <div className='HUD'>
-         <h2>{playerName}</h2>
-         <h3 id='level-num'>Level: {curStage}</h3>
-         <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>
+           <h2>{playerName}</h2>
+           <h3 id='level-num'>Level: {curStage}</h3>
+           <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>
+          
          </div>
-         <div className='game-text'>
-          <p>{curText}</p>
-         </div>  
+
+        {!showText ? (
+          ''
+        ) : (
+          <>
+          <div className='game-info-div'>
+            <div className='game-info-square'>
+              <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>
+            
+              </div> 
+              <button onClick={() => showSquare(false)} id='close-square' type="submit">Begin</button>
+            </div>
+          </div>
+          </> 
+        )}
+
          <div className='game-options'>
         {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth}/> : 
         <div className='option-container'> 
@@ -255,13 +268,6 @@ import serverUrl from './config';
         }
          </div>
         </> 
-      ) 
-        : (
-       <div className='intro'>
-        <h1>TUTORIAL</h1>
-        <button onClick={endIntro(false)} type="submit"></button>
-       </div>
-       )}   
     </div>
   );
 

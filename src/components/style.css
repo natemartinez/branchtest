@@ -139,11 +139,11 @@ body{
 }
 
 /*Quiz Screen*/
-.intro-div{
+.info-div{
     display: flex;
     justify-content: center;
 }
-.intro-square{
+.info-square{
     position: absolute;
     z-index: 2;
     width: 20em;
@@ -154,11 +154,11 @@ body{
     border-radius: 10px;
     padding-top: 4em;
 }
-.intro-text{
+.info-text{
     font-size: 1.5em;
     color: antiquewhite;
 }
-.intro-text h1{
+.info-text h1{
     font-size: 1.7em;  
 }
 #close-square{
@@ -369,12 +369,48 @@ body{
 }
   
 /*Game Screen*/
-.game-text{
+
+.game-info-div{
     display: flex;
     justify-content: center;
-    font-size: 1.3em;
-    font-weight: bold;
+    position: relative;
 }
+.game-info-square{
+    position: absolute;
+    z-index: 2;
+    width: 20em;
+    height: 35em;
+    background-color: #343a40;
+    margin-top: 0vh;
+    text-align: center;
+    border-radius: 10px;
+    padding-top: 1em;
+}
+.game-info-text{
+    font-size: 1.2em;
+    color: antiquewhite;
+    margin-top: 1em;
+}
+.game-info-text h1{
+    font-size: 1.7em;  
+}
+.choice-diagram{
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+.diff-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.diff-exp{
+    width: 3em;
+    margin: 0.5em;
+}
+
 
 .main-menu{
     display: flex;
