@@ -39,7 +39,9 @@ const images = require.context('../../../public/images', true);
            <img className='skill-bkgrd' src={images(`./Physical.png`)} alt="icon"></img>
            <h2>Physical</h2>
            <div className='skill-boxes'>
-            
+             <div className='phys-box'>
+              
+             </div>
            </div>
         </div>
         <div className='skill-div' id='ment-div'>

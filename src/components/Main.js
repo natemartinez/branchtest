@@ -142,14 +142,14 @@ const images = require.context('../../public/images', true);
   
   };
 
-  async function buildAttacks(currentUser) {
+  async function buildSkills(currentUser) {
     // This function will return the currentStage data
     // which will send to Levels to iterate over it
     let userInfo = {
       username:currentUser
     };
 
-     axios.post(serverUrl + '/buildAttacks', userInfo)
+     axios.post(serverUrl + '/buildSkills', userInfo)
       .then(response => { 
         let skills = response.data.doc;
         console.log(skills)
@@ -212,7 +212,7 @@ const images = require.context('../../public/images', true);
   };
 
   useEffect(() => {
-    buildAttacks(playerName);
+    buildSkills(playerName);
     getLevel(playerName);
   }, []);
 

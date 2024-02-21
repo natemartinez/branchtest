@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
-const SkillModel = require('./models/skills');
+const AttackModel = require('./models/attacks');
 const ItemsModel = require('./models/items');
+
 const app = express();
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -109,8 +110,13 @@ app.post('/sendUser', async (req, res) => {
     }
   };
   let skills = [];
+  let attacks = [];
   let status = {
-    'health': 100
+    'health': 100,
+    'level': {
+      num: 1,
+      exp: 0
+    }
   };
   let progressStart = 1.1;
   let inventory = [];
@@ -158,11 +164,11 @@ app.post('/sendUser', async (req, res) => {
   try {
     let doc = await PlayerModel.findOne({ username: username.user });
     if (!doc) {
-      doc = new PlayerModel({ username: username.user, status:status, skills:skills, personality: results, stats: stats, inventory:inventory, progress: progressStart });
+      doc = new PlayerModel({ username: username.user, status:status, skills:skills, attacks:attacks, personality: results, stats: stats, inventory:inventory, progress: progressStart });
       await doc.save();
       res.status(200).json({ message: 'New document inserted successfully' });
     } else {
-      await PlayerModel.updateOne({ username: username.user }, { $set: {status:status, skills:skills, personality: results, stats: stats, inventory:inventory, progress: progressStart} });
+      await PlayerModel.updateOne({ username: username.user }, { $set: {status:status, skills:skills, attacks:attacks, personality: results, stats: stats, inventory:inventory, progress: progressStart} });
       res.status(200).json({ message: 'Document updated successfully', stats });
     }
   } catch (err) {
@@ -171,26 +177,27 @@ app.post('/sendUser', async (req, res) => {
   }
 });
 
-app.post('/buildAttacks', async (req, res) => {
+app.post('/buildSkills', async (req, res) => {
   const {username} = req.body;
 
   let doc = await PlayerModel.findOne({ username: username });
   let physicalClass = doc.stats.Physical;
   let mentalClass = doc.stats.Mental;
   let attacksArray = [];
+  let skillsArray = [];
 
   if(doc){
     if(physicalClass.strength > 1){
     // get the punching skill
-     let punch = await SkillModel.findOne({ skillName: 'Punch' });  
-     let kick = await SkillModel.findOne({ skillName: 'Kick' });
+     let punch = await AttackModel.findOne({ skillName: 'Punch' });  
+     let kick = await AttackModel.findOne({ skillName: 'Kick' });
      attacksArray.push(punch, kick);
     };
 
     if(mentalClass.intelligence >= 3){
     // get the punching skill
-     let distract = await SkillModel.findOne({ skillName: 'Distraction' });  
-     let wps = await SkillModel.findOne({ skillName: 'Weak Point Strike' });
+     let distract = await AttackModel.findOne({ skillName: 'Distraction' });  
+     let wps = await AttackModel.findOne({ skillName: 'Weak Point Strike' });
      attacksArray.push(distract, wps);
     };
 

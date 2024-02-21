@@ -2,11 +2,10 @@ const mongoose = require('mongoose');
 
 const skillSchema = new mongoose.Schema({
     name: String,
+    effect: String,
     type: String,
-    level:Number,
-    baseDMG:Number,
+    num: Number
 })
 
-const SkillModel = mongoose.model('Skill', skillSchema);
-
+const SkillModel = mongoose.model('skills', skillSchema);
 module.exports = SkillModel;
