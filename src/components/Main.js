@@ -22,7 +22,6 @@ const images = require.context('../../public/images', true);
   const [healthBar, setHealthBar] = useState(null);
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
-  let infoText = '';
 
   const setHealth = (health) => {
     setHealthBar(health);
@@ -43,11 +42,6 @@ const images = require.context('../../public/images', true);
        console.error('Error:', error);
       });
   };
-
-  useEffect(() => {
-    getHealth(playerName);
-  }, []);
-
 
   const setInactive = (event) => {
    // sets the specific button chosen as a clicked class
@@ -98,8 +92,25 @@ const images = require.context('../../public/images', true);
       });
   };
 
-  const triggerResult = (currentUser, result, prob) => {
+  const levelUpdate = (exp, playerName, health) => {
+    const itemInfo = {
+      username:playerName,
+      expUpdate:exp,
+      health:health
+    };
 
+    axios.post(serverUrl + '/levelUpdate', itemInfo)
+      .then(response => { 
+        let messageUpdate = response.data;
+        console.log(messageUpdate);
+      })
+      .catch(error => {
+       console.error('Error:', error);
+      });
+  };
+
+  const triggerResult = (currentUser, result, prob) => {
+      console.log(result)
      if(stageType === 'location'){
        setCurStage(result);
      } else if(stageType === 'search'){
@@ -108,10 +119,9 @@ const images = require.context('../../public/images', true);
         if (prob === 'easy'){
         if(outcome < 90){
          setShowResult('Success');
-         setShowResultEvent('You have received a ' + result);
-         itemAdd(result, currentUser);
-        // activate function that searches for result in DB
-        // and sends to player's inventory
+         setShowResultEvent('You have received a ' + result.item);
+         itemAdd(result.item, currentUser);
+         levelUpdate(result.xp, currentUser, healthBar);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
@@ -119,8 +129,9 @@ const images = require.context('../../public/images', true);
         } else if (prob === 'hard'){
         if(outcome > 90){
          setShowResult('Success' );
-         setShowResultEvent('You have received a ' + result);
-         itemAdd(result, currentUser);
+         setShowResultEvent('You have received a ' + result.item);
+         itemAdd(result.item, currentUser);
+         levelUpdate(result.xp, currentUser, healthBar);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
@@ -128,8 +139,9 @@ const images = require.context('../../public/images', true);
         } else {
         if(outcome > 50){
          setShowResult('Success');
-         setShowResultEvent('You have received a ' + result);
-         itemAdd(result, currentUser);
+         setShowResultEvent('You have received a ' + result.item);
+         itemAdd(result.item, currentUser);
+         levelUpdate(result.xp, currentUser);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
@@ -210,6 +222,10 @@ const images = require.context('../../public/images', true);
   const showSquare = (bool) => {
     setShowText(bool);
   };
+
+  useEffect(() => {
+    getHealth(playerName);
+  }, []);
 
   useEffect(() => {
     buildSkills(playerName);

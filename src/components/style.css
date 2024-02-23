@@ -681,11 +681,11 @@ body{
 /* Bio Screen */
 .bio-top{
     position: relative;
-    top: 1em;
+    margin-top: 0.5em;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    margin-bottom: 3em;
+    margin-bottom: 4em;
 }
 
 /* Skill Screen */
@@ -702,21 +702,74 @@ body{
     padding: 0.5em;
     text-align: center;
     font-size: 2.5em;
-    height: 5em;
+    height: 15em;
     color: black;
     border: 2px solid black;
 }
 
 .skill-bkgrd{
-    width: 3em;
-    height: 3em;
+    width: 6em;
+    height: 7em;
     z-index: 1;
     position: absolute;
     left: 0;
     right: 0;
-    margin: 0 auto;
+    margin: 3em auto;
     opacity: 20%;
-  }
+}
+
+.skill-boxes{
+    display: flex;
+    position: relative;
+    justify-content: space-evenly;
+}
+
+.level-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3em;
+}
+#level-info{
+    display: flex;
+}
+#level-info > *{
+    margin: 0em 0.5em;
+}
+
+
+#num-div{
+   display: flex;
+   flex-direction: row;
+   align-items: baseline;
+   margin-bottom: 1em;
+}
+#num-div > *{
+    margin: 0em 0.5em;
+}
+#level-bar{
+    width: 25em;
+}
+
+.phys-box{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 4em;
+    height: 4em;
+    border-radius: 10px;
+    border: 2px solid black;
+}
+.phys-img{
+    width: 1.5em;
+}
+.active{
+    background-color: azure;
+}
+
+
 
 @media screen and (min-width: 480px) {
   #skill-sec{

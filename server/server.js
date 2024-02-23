@@ -4,6 +4,7 @@ const cors = require('cors');
 const PlayerModel = require('./models/player');
 const EnemyModel = require('./models/enemies');
 const AttackModel = require('./models/attacks');
+const SkillModel = require('./models/skills');
 const ItemsModel = require('./models/items');
 
 const app = express();
@@ -94,7 +95,7 @@ app.post('/sendUser', async (req, res) => {
   let stats = {
     'Physical': {
       'strength': 1,
-      'dexterity': 1
+      'dexterity': 4
     },
     'Mental': {
       'intuition': 1,
@@ -115,7 +116,9 @@ app.post('/sendUser', async (req, res) => {
     'health': 100,
     'level': {
       num: 1,
-      exp: 0
+      exp: 0,
+      cap: 100,
+      point: 0
     }
   };
   let progressStart = 1.1;
@@ -193,6 +196,10 @@ app.post('/buildSkills', async (req, res) => {
      let kick = await AttackModel.findOne({ skillName: 'Kick' });
      attacksArray.push(punch, kick);
     };
+    if(physicalClass.dexterity > 3){
+      let dodge = await SkillModel.findOne({ name: 'dodge' }); 
+      skillsArray.push(dodge);
+    };
 
     if(mentalClass.intelligence >= 3){
     // get the punching skill
@@ -201,7 +208,7 @@ app.post('/buildSkills', async (req, res) => {
      attacksArray.push(distract, wps);
     };
 
-    await PlayerModel.updateOne({ username: username }, { $set: {attacks: attacksArray } });
+    await PlayerModel.updateOne({ username: username }, { $set: {attacks: attacksArray, skills: skillsArray } });
   }
   try {
     res.status(200).send({doc});
@@ -232,7 +239,10 @@ const Stages = [
                 type: 'Physical',
                 stat: 'strength',
                 difficulty: 1,
-                result: 'Jacket', //replace with database object
+                result: {
+                  item: 'Jacket',
+                  xp: 25
+                },
                 probability:''
               },
               {
@@ -240,7 +250,10 @@ const Stages = [
                 type: 'Mental',
                 stat: 'intuition',
                 difficulty: 1,
-                result: 'Med-kit',
+                result: {
+                  item: 'Med-kit',
+                  xp:50
+                },
                 probability:''
               },
               {
@@ -248,15 +261,21 @@ const Stages = [
                 type: 'Mental',
                 stat: 'intuition',
                 difficulty: 1,
-                result: 'Med-kit',
+                result: {
+                  item: 'safety glasses',
+                  xp:50
+                },
                 probability:''
               },
               {
-                name:'On top of your head',
+                name:'Curtains',
                 type: 'Mental',
                 stat: 'intuition',
                 difficulty: 0,
-                result: 'Note',
+                result: {
+                  item: 'wooden panel',
+                  xp:50
+                },
                 probability:''
               },
              ],
@@ -548,6 +567,57 @@ app.post('/enemyAttack', async(req, res) => {
     res.status(500).json({ message: "An error has occurred" });
   };
 });
+
+// Leveling up
+app.post('/levelUpdate', async(req, res) => {
+  const {expUpdate , username, health} = req.body;
+  // if player's exp >= level cap
+  // then update level by 1 and level cap by 100
+  // also give 1 skill point to use
+  let doc = await PlayerModel.findOne({ username:username});
+  let userEXP = doc.status.level.exp;
+  let expCap = doc.status.level.cap;
+  let levelNum = doc.status.level.num;
+  let skillPts = doc.status.level.point;
+  let message = 'Player Level updated';
+
+  console.log('+ ' + expUpdate);
+  console.log('Current User XP: ' + userEXP);
+  console.log(doc.status.level);
+
+  userEXP = userEXP + expUpdate;
+
+  if(userEXP >= expCap){
+    message = 'Level Up!';
+    levelNum++;
+    skillPts++;
+    expCap = expCap + 200;
+  }
+
+  const expPropertyUpdate = {
+    $set: {
+      status: {
+        health: health,
+        level:{
+          num:levelNum,
+          exp:userEXP,
+          cap:expCap,
+          point:skillPts,
+        }
+      }
+    }
+  };
+
+  await PlayerModel.updateOne({ username: username }, expPropertyUpdate);
+
+  try {
+    res.send(message);
+  } catch (err) {
+    console.error('Error', err);
+    res.status(500).json({ message: "An error has occurred" });
+  };
+});
+
 
 connect();
 
