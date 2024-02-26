@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './style.css';
 import { useNavigate } from 'react-router-dom';
-import serverUrl from './config';
+import serverUrl from './Config';
 const images = require.context('../../public/images', true);
 
 // This component will output personality results

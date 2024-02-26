@@ -4,7 +4,7 @@ import axios from 'axios';
 import Question from './Question';
 import Result from './Result';
 import ReactLoading from "react-loading";
-import serverUrl from './config';
+import serverUrl from './Config';
 
 const images = require.context('../../public/images', true);
 const logo = images(`./branchTest-logo.png`);
