@@ -3,7 +3,7 @@ import axios from 'axios';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ProgressBar } from 'react-bootstrap';
-import serverUrl from './Config';
+import serverUrl from './config';
 const images = require.context('../../public/images', true);
 
 const Combat = ({level, username, playerHealth}) => {

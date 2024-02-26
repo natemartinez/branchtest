@@ -4,7 +4,7 @@ import '../style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
-import serverUrl from '../Config';
+import serverUrl from '../config';
 const images = require.context('../../../public/images', true);
 // Placed hp here to display combat changes inside HUD
 
