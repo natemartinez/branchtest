@@ -20,6 +20,7 @@ const images = require.context('../../public/images', true);
   const [showText, setShowText] = useState(null);
   const [curText, setCurText] = useState('');
   const [healthBar, setHealthBar] = useState(null);
+  const [isSelected, setIsSelected] = useState([]);
 
   const buttons = document.querySelectorAll('.game-btn-clicked');
 
@@ -43,9 +44,44 @@ const images = require.context('../../public/images', true);
       });
   };
 
-  const setInactive = (event) => {
+  const setInactive = (event, username, curStage) => {
    // sets the specific button chosen as a clicked class
-    event.target.className = 'game-btn-clicked';
+   // look into player's progress and find the choices that
+   event.target.className = 'game-btn-clicked';
+
+   let selectedChoices = [...isSelected];
+   selectedChoices.push(event.target.innerText);
+   setIsSelected(selectedChoices);
+
+    let choicesObj = {
+      username:username,
+      choices: selectedChoices,
+      stage: curStage
+    };
+
+    axios.post(serverUrl + '/setInactive', choicesObj)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+       console.error('Error:', error);
+      });
+
+
+  };
+  const sendOptions = (options, username) => {
+   let optionObj = {
+    choices: options,
+    username:username
+   };
+
+    axios.post(serverUrl + '/startInactive', optionObj)
+      .then(response => {
+        setOptions(response.data);
+      })
+      .catch(error => {
+       console.error('Error:', error);
+      });
   };
 
   const displayOptions = (type, options, level) => {
@@ -67,8 +103,9 @@ const images = require.context('../../public/images', true);
       for(let i=0; i < options.length; i++){
         let optionObj = {
          "name" : options[i].name,
-         "diff" : options[i].probability,
+         "difficulty" : options[i].difficulty,
          "result" : options[i].result,
+         "class" : options[i].class
         }
         optionNames.push(optionObj);
       }
@@ -98,7 +135,6 @@ const images = require.context('../../public/images', true);
       expUpdate:exp,
       health:health
     };
-
     axios.post(serverUrl + '/levelUpdate', itemInfo)
       .then(response => { 
         let messageUpdate = response.data;
@@ -107,10 +143,10 @@ const images = require.context('../../public/images', true);
       .catch(error => {
        console.error('Error:', error);
       });
-  };
+  }; 
 
   const triggerResult = (currentUser, result, prob) => {
-      console.log(result)
+
      if(stageType === 'location'){
        setCurStage(result);
      } else if(stageType === 'search'){
@@ -164,7 +200,7 @@ const images = require.context('../../public/images', true);
      axios.post(serverUrl + '/buildSkills', userInfo)
       .then(response => { 
         let skills = response.data.doc;
-        console.log(skills)
+      //  console.log(skills)
       })
       .catch(error => {
        console.error('Error:', error);
@@ -184,6 +220,9 @@ const images = require.context('../../public/images', true);
         let type = response.data.stageType;
         let curLevel = response.data.curStage;
         let stageText = response.data.curStageText;
+
+        sendOptions(options, playerName);
+
         if(stageText){
           setShowText(true);
         }
@@ -197,16 +236,27 @@ const images = require.context('../../public/images', true);
       });
   };
 
-  const nextLevel = (currentUser, level, type) => { 
+  const nextStage = (currentUser, level, type) => { 
       buttons.forEach((button) => {
         button.className = 'game-btn';
       });
-
       let stageInfo = {
         username: currentUser,
         level: level,
-        type: type
+        type: type,
       };
+      let resetChoices = {
+        username: currentUser,
+      };
+
+      // clear choices here
+      axios.post(serverUrl + '/clearInactive', resetChoices)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+       console.error('Error:', error);
+      });
 
       axios.post(serverUrl + '/stageChange', stageInfo)
       .then(response => {
@@ -225,14 +275,12 @@ const images = require.context('../../public/images', true);
 
   useEffect(() => {
     getHealth(playerName);
-  }, []);
-
-  useEffect(() => {
     buildSkills(playerName);
     getLevel(playerName);
   }, []);
 
-
+  console.log(options);
+  
   return (
     <div> 
         <>
@@ -247,14 +295,14 @@ const images = require.context('../../public/images', true);
           ''
         ) : (
           <>
-          <div className='game-info-div'>
+           <div className='game-info-div'>
             <div className='game-info-square'>
               <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>
             
               </div> 
               <button onClick={() => showSquare(false)} id='close-square' type="submit">Begin</button>
             </div>
-          </div>
+           </div>
           </> 
         )}
 
@@ -264,8 +312,8 @@ const images = require.context('../../public/images', true);
          {options.map((option, index) => (
           <div key={index}>
             <button 
-              onClick={(event) => {setInactive(event); triggerResult(playerName, option.result, option.diff)}}
-              className='game-btn' id={option.diff} type="submit">
+              onClick={(event) => {setInactive(event, playerName, curStage); triggerResult(playerName, option.result, option.difficulty)}}
+               className={option.class} id={option.difficulty} type="submit">
               {option.name}
             </button>
           </div>  
@@ -279,7 +327,7 @@ const images = require.context('../../public/images', true);
          </div> 
          </div>
          )}
-         <button onClick={() => nextLevel(playerName, curStage, stageType)} id='next-btn'>Next</button>
+         <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>
         </div>
         }
          </div>

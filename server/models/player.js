@@ -9,7 +9,7 @@ const playerSchema = new mongoose.Schema({
     attacks: Array,
     skills: Array,
     inventory: Array,
-    progress: Number,
+    progress: Object,
 })
 
 const PlayerModel = mongoose.model('players', playerSchema);

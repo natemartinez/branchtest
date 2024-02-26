@@ -121,7 +121,10 @@ app.post('/sendUser', async (req, res) => {
       point: 0
     }
   };
-  let progressStart = 1.1;
+  let progressStart = {
+    levelNum:1.1,
+    choices: []
+  };
   let inventory = [];
 
   results.forEach(result => {
@@ -226,7 +229,7 @@ const Stages = [
           "<h2>In the BranchTest, your personality affects the success and outcomes of your decisions</h2>" +
           "<div class='choice-diagram'>" +
              
-            "<div class='diff-div'><img class='diff-exp' src='images/easy.png'></img><h2> = Easy</h2></div>" +
+            "<div class='diff-div'><img class='diff-exp' src='images/easy.png'></img><h3> = Easy</h3></div>" +
             "<div class='diff-div'><img class='diff-exp' src='images/medium.png'></img><h3> = Medium</h3></div>" +
             "<div class='diff-div'><img class='diff-exp' src='images/hard.png'></img><h3> = Hard</h3></div>" +
           "</div>",        
@@ -238,45 +241,45 @@ const Stages = [
                 name:'Closet',
                 type: 'Physical',
                 stat: 'strength',
-                difficulty: 1,
+                probability: 1,
                 result: {
                   item: 'Jacket',
                   xp: 25
                 },
-                probability:''
+                class:'game-btn'
               },
               {
                 name:'Drawer',
                 type: 'Mental',
                 stat: 'intuition',
-                difficulty: 1,
+                probability: 1,
                 result: {
                   item: 'Med-kit',
                   xp:50
                 },
-                probability:''
+                class:'game-btn'
               },
               {
                 name:'Under the rug',
                 type: 'Mental',
                 stat: 'intuition',
-                difficulty: 1,
+                probability: 1,
                 result: {
-                  item: 'safety glasses',
+                  item: 'Safety Glasses',
                   xp:50
                 },
-                probability:''
+                class:'game-btn'
               },
               {
                 name:'Curtains',
                 type: 'Mental',
                 stat: 'intuition',
-                difficulty: 0,
+                probability: 0,
                 result: {
-                  item: 'wooden panel',
+                  item: 'Wooden Panel',
                   xp:50
                 },
-                probability:''
+                class:'game-btn'
               },
              ],
              result:1.2
@@ -292,14 +295,17 @@ const Stages = [
               {
                 name:'Office',
                 result: 1.3,
+                class:'game-btn'
               },
               {
                 name:'Hallway',
                 result: 1.4,
+                class:'game-btn'
               },
               {
                 name:'Downstairs',
                 result: 1.5,
+                class:'game-btn'
               },
              ]   
           },
@@ -315,33 +321,33 @@ const Stages = [
               name:'Desk',
               type: 'Physical',
               stat: 'strength',
-              difficulty: 1,
+              probability: 1,
               result: 'Jacket',
-              probability:''
+              class:'game-btn'
             },
             {
               name:'File cabinet',
               type: 'Mental',
               stat: 'intuition',
-              difficulty: 1,
+              probability: 1,
               result: 'Med-kit',
-              probability:''
+              class:'game-btn'
             },
             {
               name:'Check the whiteboard',
               type: 'Mental',
               stat: 'intuition',
-              difficulty: 1,
+              probability: 1,
               result: 'Med-kit',
-              probability:''
+              class:'game-btn'
             },
             {
               name:'Check the windows',
               type: 'Mental',
               stat: 'intuition',
-              difficulty: 1,
+              probability: 1,
               result: 'Med-kit',
-              probability:''
+              class:'game-btn'
             },
            ],
            result: 1.7
@@ -353,7 +359,11 @@ const Stages = [
         stageInfo: {
            level: 1.7,
            enemies:['ghost', 'ghost'],
-           type: 'combat'
+           type: 'combat',
+           result: {
+            item: 'Med-kit',
+            xp: 100
+           }
         },
       },
 ];
@@ -373,23 +383,22 @@ app.post('/currentStage', async (req, res) => {
           let curStage = curStageInfo.level;
 
            if(stageType === 'search') {
-              // search events will compare user stats with options' difficulty
-              // to come out to a probability of success
              options.map((option, index) => {             
               let optionType = option.type;
               let optionStat = option.stat;
               let userStat = playerStats[optionType][optionStat];
 
-               if(userStat > option.difficulty){
-                option.probability = 'easy'
-               }else if(userStat < option.difficulty){
-                option.probability = 'hard';
+               if(userStat > option.probability){
+                option.difficulty = 'easy'
+               }else if(userStat < option.probability){
+                option.difficulty = 'hard';
                } else{
-                option.probability = 'medium';
+                option.difficulty = 'medium';
                }
              });   
              res.status(200).json({stageType, options, curStage, curStageText});
            } else {
+            console.log(options);
              res.status(200).json({stageType, options, curStage, curStageText});
            };
           break;
@@ -400,7 +409,8 @@ app.post('/currentStage', async (req, res) => {
     try {
       let doc = await PlayerModel.findOne({ username: username });
       if (doc) { 
-        const userProgress = doc.progress;
+        const userProgress = doc.progress.levelNum;
+        console.log("Player's progress "+ userProgress)
         const userStats = doc.stats;
         await buildOptions(userProgress, userStats);
       }
@@ -423,9 +433,6 @@ app.post('/receiveStatus', async (req, res) => {
 });
 
 app.post('/itemSearch', async (req, res) => {
-    //search for item in DB
-    // if exists, then receive item and place
-    // player's inventory
   const {itemName, username} = req.body;
 
   let itemDoc = await ItemsModel.findOne({ name: itemName });
@@ -458,14 +465,18 @@ try {
 // Stage progression
 app.post('/stageChange', async (req, res) => {
     const {username, level, type} = req.body;
-    
-    let nextStage = '';
+    let nextStage;
+
+    const levelUpdate = {
+      levelNum: level,
+      choices: []
+    }; // wipe choices array
 
     // used to update database for progression
     if(type === 'location'){
        for (let i = 0; i < Stages.length; i++) {
          if(Stages[i].stageInfo.level === level){
-          await PlayerModel.updateOne({username: username},{ $set: { progress:level}});
+          await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
           break;
          }
        };
@@ -474,8 +485,9 @@ app.post('/stageChange', async (req, res) => {
         let stageInfo = Stages[i].stageInfo;
          if(stageInfo.level === level) {
           nextStage = stageInfo.result;
-          await PlayerModel.updateOne({username: username},{ $set: { progress:nextStage}});
-          //console.log('next stage:', nextStage);
+          console.log('Next Stage: ' + nextStage);
+          levelUpdate.levelNum = nextStage;
+          await PlayerModel.updateOne({username: username},{ $set: { progress:levelUpdate}});
           break;
          } 
        };
@@ -489,6 +501,59 @@ app.post('/stageChange', async (req, res) => {
         res.status(500).json({ message: "An error has occurred" });
     };
 });
+
+app.post('/setInactive', async (req, res) => {
+  const {choices, stage, username} = req.body;
+
+  const levelUpdate = {
+    levelNum: stage,
+    choices: choices,
+  };
+
+  await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
+});
+
+app.post('/startInactive', async (req, res) => {
+  const {choices, username} = req.body;
+  let doc = await PlayerModel.findOne({username: username});
+
+  const selectedChoices = doc.progress.choices;
+  let curChoices = choices;
+
+  for(let i=0; i<curChoices.length; i++){
+    if(selectedChoices[i] === curChoices[i].name){
+      curChoices[i].class = 'game-btn-clicked';
+      console.log(curChoices[i].name + ' was selected');
+    }
+  };
+  try {
+    res.send(curChoices);
+  } catch (err) {
+      console.error('Error', err);
+      res.status(500).json({ message: "An error has occurred" });
+  };
+  
+});
+
+app.post('/clearInactive', async (req, res) => {
+  const {level, username} = req.body;
+  const emptyChoices = [];
+  const levelUpdate = {
+    levelNum: level,
+    choices: emptyChoices,
+  };
+
+  await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
+  try {
+    res.send('Choices cleared');
+  } catch (err) {
+      console.error('Error', err);
+      res.status(500).json({ message: "An error has occurred" });
+  };
+  
+});
+
+
 
 // Combat Level
 app.post('/combatStart', async (req, res) => {
@@ -570,7 +635,7 @@ app.post('/enemyAttack', async(req, res) => {
 
 // Leveling up
 app.post('/levelUpdate', async(req, res) => {
-  const {expUpdate , username, health} = req.body;
+  const {expUpdate, username, health} = req.body;
   // if player's exp >= level cap
   // then update level by 1 and level cap by 100
   // also give 1 skill point to use
@@ -580,10 +645,6 @@ app.post('/levelUpdate', async(req, res) => {
   let levelNum = doc.status.level.num;
   let skillPts = doc.status.level.point;
   let message = 'Player Level updated';
-
-  console.log('+ ' + expUpdate);
-  console.log('Current User XP: ' + userEXP);
-  console.log(doc.status.level);
 
   userEXP = userEXP + expUpdate;
 

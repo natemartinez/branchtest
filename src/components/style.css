@@ -4,6 +4,7 @@ body{
     font-weight: 300;
 }
 
+/*Create blur and background fade effects*/
 .loading-container{
     display: flex;
     position: absolute;
@@ -20,6 +21,7 @@ body{
 .loading-container:after{
     position: relative;
 }
+
 
 /*Register & Login Form*/
 .form-logo-div{
@@ -370,6 +372,7 @@ body{
   
 /*Game Screen*/
 
+
 .game-info-div{
     display: flex;
     justify-content: center;
@@ -391,8 +394,8 @@ body{
     color: antiquewhite;
     margin-top: 1em;
 }
-.game-info-text h1{
-    font-size: 1.7em;  
+.game-info-text h2{
+    font-size: 1.3em;  
 }
 .choice-diagram{
     display: flex;
@@ -410,6 +413,23 @@ body{
     width: 3em;
     margin: 0.5em;
 }
+@media screen and (min-width: 480px) {
+  .game-info-square{
+    width: 40em;
+    height: 30em;
+  }
+  .game-info-text h2{
+    font-size: 1.6em;
+    padding: 1em;  
+  }
+
+  .choice-diagram{
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+}
+
+
 
 
 .main-menu{
