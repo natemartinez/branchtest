@@ -21,7 +21,18 @@ const Combat = ({level, username, playerHealth}) => {
 
     const setHealth = (health) => {
       setHealthBar(health);
-      playerHealth(health); 
+      playerHealth(health);
+      let userInfo = {
+        username: username,
+        health: health
+      }
+      axios.post(serverUrl + '/healthUpdate', userInfo)
+        .then(response => { 
+          console.log(response.data);
+        })
+        .catch(error => {
+         console.error('Error:', error);
+        }); 
     };
 
     const getHealth = async(username) => {
@@ -112,9 +123,37 @@ const Combat = ({level, username, playerHealth}) => {
       }
     };
 
-    const holdAttack = (option) => {
+    const useItem = (item, health) => {
+      // need to affect player's stats in this function
+      // should I change state?
+      // if type is healing then affect healthBar
+      // I have to first see if I can change the state of healthBar with no errors
+       let newHP;
+
+       if(item.type === 'healing'){
+         newHP = health + item.num;
+         if(newHP > 100){
+           newHP = 100;
+         };
+       }
+
+       setHealth(newHP);
+
+       // send to function that removes item from database
+
+    };
+    
+    const holdAttack = (option, health) => {
+      if(option.class === 'consumable'){
+        if(userTurn != null){
+          useItem(option, health);
+          return
+         // setSelectedAttack(option);
+        }else {
+          return
+        }
+      }
       // use this function to set the attack
-      console.log(option)
       if(userTurn != null){
         setAttackBegin(true);
         setSelectedAttack(option);
@@ -179,6 +218,7 @@ const Combat = ({level, username, playerHealth}) => {
         changeToAttack(username);
     }, [showAttacks]);
 
+
     useEffect(() => {
       const fetchEnemies = async () => {
         await receiveEnemies(level);
@@ -241,7 +281,7 @@ const Combat = ({level, username, playerHealth}) => {
           {Items.map((option, index) => (
            <div key={index}>
              <button 
-                className='action-btn' type='button' onClick={() => {holdAttack(option)}}>
+                className='action-btn' type='button' onClick={() => {holdAttack(option, healthBar)}}>
                 {option.name}
              </button>
            </div>  

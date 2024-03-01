@@ -619,9 +619,6 @@ app.post('/enemyAttack', async(req, res) => {
 // Leveling up
 app.post('/levelUpdate', async(req, res) => {
   const {expUpdate, username, health} = req.body;
-  // if player's exp >= level cap
-  // then update level by 1 and level cap by 100
-  // also give 1 skill point to use
   let doc = await PlayerModel.findOne({ username:username});
   let userEXP = doc.status.level.exp;
   let expCap = doc.status.level.cap;
@@ -661,6 +658,43 @@ app.post('/levelUpdate', async(req, res) => {
     res.status(500).json({ message: "An error has occurred" });
   };
 });
+
+app.post('/healthUpdate', async(req, res) => {
+  const {username, health} = req.body;
+  let doc = await PlayerModel.findOne({ username:username });
+  // we receive the doc to update the health property
+  // while keeping the level property in tact
+
+  let userEXP = doc.status.level.exp;
+  let expCap = doc.status.level.cap;
+  let levelNum = doc.status.level.num;
+  let skillPts = doc.status.level.point;
+ 
+  // check if healthUpdate clears user.status.level
+  const healthUpdate = {
+    $set: {
+      status: {
+        health: health,
+        level:{
+          num:levelNum,
+          exp:userEXP,
+          cap:expCap,
+          point:skillPts,
+        }
+      }
+    }
+  };
+
+  await PlayerModel.updateOne({ username: username }, healthUpdate);
+  try {
+    res.send('health updated');
+  } catch (err) {
+    console.error('Error', err);
+    res.status(500).json({ message: "An error has occurred" });
+  };
+});
+
+
 
 connect();
 

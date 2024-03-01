@@ -8,7 +8,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import serverUrl from './config';
 const images = require.context('../../public/images', true);
-import $ from 'jquery';
 
 
 // Placed hp here to display combat changes inside HUD
@@ -38,7 +37,7 @@ import $ from 'jquery';
     axios.post(serverUrl + '/receiveStatus', userInfo)
       .then(response => { 
         let hpData = response.data.doc.status;
-        setHealth(hpData.health)
+        setHealth(hpData.health, playerName)
       })
       .catch(error => {
        console.error('Error:', error);
@@ -305,8 +304,8 @@ import $ from 'jquery';
         )}
 
          <div className='game-options'>
-        {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth}/> : 
-         <div className='option-container'> 
+          {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth}/> : 
+           <div className='option-container'> 
           {options.map((option, index) => (
           <div key={index}>
             <button 
@@ -317,13 +316,13 @@ import $ from 'jquery';
           </div>  
           ))}
           {showResult && (
-         <div className='result-div'>
+           <div className='result-div'>
           <div className='result-info'>
            <h1>{showResult}</h1>
            <h3>{showResultEvent}</h3>
            <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
           </div> 
-         </div>
+           </div>
           )}
           {(stageType === 'location') ? '' : <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>}
          </div>
