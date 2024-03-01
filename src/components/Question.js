@@ -25,7 +25,6 @@ const Question = ({data, answerSelect, nextQuestion}) => {
       <ul className='option-list'>
         {options.map((option, index) => (
           <li key={index}>
-
             <button className={chosenOption === option ? 'option-btn-clicked' : 'option-btn'} onClick={() => optionSelected(option)}>
               {option}
             </button>

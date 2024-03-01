@@ -11,6 +11,8 @@ const Combat = ({level, username, playerHealth}) => {
     const [Options, setOptions] = useState([]);   
     const [text, setText] = useState("What's your move?");   
     const [showAttacks, setShowAttacks] = useState(false);
+    const [showItems, setShowItems] = useState(false);
+    const [Items, setItems] = useState([]);
     const [attackBegin, setAttackBegin] = useState(false);
     const [selectedEnemy, setSelectedEnemy] = useState(null);
     const [selectedAttack, setSelectedAttack] = useState(null);
@@ -27,7 +29,7 @@ const Combat = ({level, username, playerHealth}) => {
         username:username
       };
   
-      axios.post(serverUrl + '/buildSkills', userInfo)
+      axios.post(serverUrl + '/receiveStatus', userInfo)
         .then(response => { 
           let hpData = response.data.doc.status;
           setHealth(hpData.health)
@@ -36,10 +38,6 @@ const Combat = ({level, username, playerHealth}) => {
          console.error('Error:', error);
         });
     };
-
-    useEffect(() => {
-      getHealth(username)
-    }, []);
 
     const receiveEnemies = async (level) => {
       let curLevel = {
@@ -54,34 +52,21 @@ const Combat = ({level, username, playerHealth}) => {
          console.error('Error:', error);
       }
     };
-    
-    useEffect(() => {
-      const fetchEnemies = async () => {
-        await receiveEnemies(level);
-      };
-      fetchEnemies();
-    }, [level]);
 
     const changeToAttack = async (username) => {
+  
       let optionObj = {
         username:username,
       };
-
+      
       try {
          const response = await axios.post(serverUrl + '/receiveSkills', optionObj);
-         let data = response.data.userSkills;
+         let data = response.data.combatData;
          setOptions(data);
       } catch (error) {
          console.error('Error:', error);
       }
     };
-  
-    useEffect(() => { 
-        setAttackBegin(false);
-        setSelectedEnemy(null);
-        setSelectedAttack(null);
-        changeToAttack(username);
-    }, [showAttacks]);
 
     // Enemy's attack 
     const enemyTurn = async (playerHP) => { 
@@ -129,6 +114,7 @@ const Combat = ({level, username, playerHealth}) => {
 
     const holdAttack = (option) => {
       // use this function to set the attack
+      console.log(option)
       if(userTurn != null){
         setAttackBegin(true);
         setSelectedAttack(option);
@@ -137,16 +123,42 @@ const Combat = ({level, username, playerHealth}) => {
       }
     };
 
+    const newText = (newText) => {
+      setText(newText)
+    };
+
+    const getItems = (username) => {
+      let userInfo = {
+        username:username
+      };
+
+      axios.post(serverUrl + '/receiveInv', userInfo)
+       .then(response => { 
+        let userItems = response.data.playerItems;
+        // only show consumables
+        let usableItems = [];
+        for(let i=0; i< userItems.length; i++){
+          if(userItems[i].class === 'consumable'){
+            usableItems.push(userItems[i]);
+          }
+        };
+        setItems(usableItems);
+       })
+       .catch(error => {
+       console.error('Error:', error);
+       });
+    };
+
+    useEffect(() => {
+       getItems(username);
+    }, [showItems]);
+
     useEffect(() => {
       if(selectedEnemy !== null){
         // call attack function
         attackStart(selectedAttack, selectedEnemy)
       }
     }, [selectedEnemy]);
-
-    const newText = (newText) => {
-     setText(newText)
-    };
 
     useEffect(() => {
         if(userTurn && attackBegin){
@@ -159,11 +171,29 @@ const Combat = ({level, username, playerHealth}) => {
         }
 
     }, [userTurn, attackBegin]);
+    
+    useEffect(() => { 
+        setAttackBegin(false);
+        setSelectedEnemy(null);
+        setSelectedAttack(null);
+        changeToAttack(username);
+    }, [showAttacks]);
+
+    useEffect(() => {
+      const fetchEnemies = async () => {
+        await receiveEnemies(level);
+      };
+      fetchEnemies();
+    }, [level]);
+
+    useEffect(() => {
+      getHealth(username)
+    }, []);
 
 
   const Enemies = () => {
     return (
-     <div>
+     <>
       <h2>{text}</h2>
       <div className='enemy-div'>      
         {curEnemies.map((element, index) => (
@@ -175,35 +205,24 @@ const Combat = ({level, username, playerHealth}) => {
         </div> 
        ))}
       </div>
-     </div> 
+     </> 
    );
   }
     
   const UserCombat = () => {
 
     const RegOptions = () => {
-      const RegOptions = [{name:'Attack'},{name:'Skills'},{name:'Items'}, {name:'Escape'}]; 
-
       return (
-        <div>
-          <div className='option-div'>
-           {RegOptions.map((option, index) => (
-               <div key={index}>
-                  <button 
-                   className='action-btn' type="submit" onClick={() => setShowAttacks(true)}>
-                   {option.name}
-                  </button>
-               </div>  
-            ))}
-          </div>
-          
-        </div>
+       <>
+         <button className='action-btn' type="submit" onClick={() => setShowAttacks(true)}>Attacks</button>
+         <button className='action-btn' type="submit" onClick={() => setShowItems(true)}>Items</button>
+         <button className='action-btn' type="submit" onClick={() => nextStage()}>Escape</button>
+       </>
       );
     };
     const AttackOptions = () => {
-      // attackOptions need to disappear when isAttackMode is true
       return (
-        <div>
+        <>
           {Options.map((option, index) => (
            <div key={index}>
              <button 
@@ -213,14 +232,31 @@ const Combat = ({level, username, playerHealth}) => {
            </div>  
          ))}
           <button className='action-btn' type="button" onClick={() => setShowAttacks(false)}>Back</button>
-        </div>
+        </>
       );
     };
+    const ItemOptions = () => {
+      return (
+        <>
+          {Items.map((option, index) => (
+           <div key={index}>
+             <button 
+                className='action-btn' type='button' onClick={() => {holdAttack(option)}}>
+                {option.name}
+             </button>
+           </div>  
+         ))}
+          <button className='action-btn' type="button" onClick={() => setShowItems(false)}>Back</button>
+        </>
+      );
+    };
+    
 
     return (
-      <div>      
-        {!showAttacks && <RegOptions/> }
+      <div className='option-div'>      
+        {(!showAttacks && !showItems) && <RegOptions/> }
         {showAttacks && <AttackOptions/>}
+        {showItems && <ItemOptions/>}
       </div>
     );
   }

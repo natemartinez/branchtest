@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import serverUrl from './config';
 const images = require.context('../../public/images', true);
+import $ from 'jquery';
+
 
 // Placed hp here to display combat changes inside HUD
  const Game = ({playerName}) => {
@@ -29,7 +31,6 @@ const images = require.context('../../public/images', true);
   };
 
   const getHealth = async(username) => {
-
     let userInfo = {
       username:username
     };
@@ -44,44 +45,51 @@ const images = require.context('../../public/images', true);
       });
   };
 
-  const setInactive = (event, username, curStage) => {
+  const setInactive = (event, username, curStage) => { 
    // sets the specific button chosen as a clicked class
-   // look into player's progress and find the choices that
-   event.target.className = 'game-btn-clicked';
-
-   let selectedChoices = [...isSelected];
-   selectedChoices.push(event.target.innerText);
-   setIsSelected(selectedChoices);
-
-    let choicesObj = {
-      username:username,
-      choices: selectedChoices,
-      stage: curStage
+    if(stageType === 'location'){
+     // event.target.className = 'option-btn-clicked';
+     // deactivated code above because I can't put option btn back to normal
+     // after nextStage happens
+      return '';
     };
-
-    axios.post(serverUrl + '/setInactive', choicesObj)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-       console.error('Error:', error);
-      });
-
-
+    if(stageType === 'search'){
+      event.target.className = 'game-btn-clicked';
+      let selectedChoices = [...isSelected];
+      selectedChoices.push(event.target.innerText);
+      setIsSelected(selectedChoices);
+    
+       let choicesObj = {
+         username:username,
+         choices: selectedChoices,
+         stage: curStage
+       };
+    
+       axios.post(serverUrl + '/setInactive', choicesObj)
+         .then(response => {
+           console.log(response.data);
+         })
+         .catch(error => {
+          console.error('Error:', error);
+       });
+    }
   };
-  const sendOptions = (options, username) => {
-   let optionObj = {
-    choices: options,
-    username:username
-   };
 
-    axios.post(serverUrl + '/startInactive', optionObj)
+  const sendOptions = (options, username, type) => {
+    if(type === 'search'){
+      let optionObj = {
+        choices: options,
+        username:username
+      };
+      axios.post(serverUrl + '/startInactive', optionObj)
       .then(response => {
         setOptions(response.data);
       })
       .catch(error => {
        console.error('Error:', error);
       });
+
+   };
   };
 
   const displayOptions = (type, options, level) => {
@@ -90,9 +98,11 @@ const images = require.context('../../public/images', true);
 
     if(type === 'location'){
       for(let i=0; i < options.length; i++){
+        
         let optionObj = {
          "name" : options[i].name,
          "result" : options[i].result,
+         "class" : options[i].class,
         }
         optionNames.push(optionObj);
       }
@@ -110,6 +120,7 @@ const images = require.context('../../public/images', true);
         optionNames.push(optionObj);
       }
     }
+
     setOptions(optionNames);
   };
 
@@ -130,6 +141,7 @@ const images = require.context('../../public/images', true);
   };
 
   const levelUpdate = (exp, playerName, health) => {
+    console.log('HP: ' + health);
     const itemInfo = {
       username:playerName,
       expUpdate:exp,
@@ -138,7 +150,6 @@ const images = require.context('../../public/images', true);
     axios.post(serverUrl + '/levelUpdate', itemInfo)
       .then(response => { 
         let messageUpdate = response.data;
-        console.log(messageUpdate);
       })
       .catch(error => {
        console.error('Error:', error);
@@ -146,16 +157,16 @@ const images = require.context('../../public/images', true);
   }; 
 
   const triggerResult = (currentUser, result, prob) => {
-
      if(stageType === 'location'){
        setCurStage(result);
+       nextStage(currentUser, result, stageType);
      } else if(stageType === 'search'){
        let outcome = Math.floor(Math.random() * 100);
        const decideOutcome = (outcome) => {
         if (prob === 'easy'){
         if(outcome < 90){
          setShowResult('Success');
-         setShowResultEvent('You have received a ' + result.item);
+         setShowResultEvent('+ ' + result.item);
          itemAdd(result.item, currentUser);
          levelUpdate(result.xp, currentUser, healthBar);
         } else {
@@ -165,26 +176,25 @@ const images = require.context('../../public/images', true);
         } else if (prob === 'hard'){
         if(outcome > 90){
          setShowResult('Success' );
-         setShowResultEvent('You have received a ' + result.item);
+         setShowResultEvent('+ ' + result.item);
          itemAdd(result.item, currentUser);
          levelUpdate(result.xp, currentUser, healthBar);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
         }
-        } else {
+        } else if(prob === 'medium') {
         if(outcome > 50){
          setShowResult('Success');
-         setShowResultEvent('You have received a ' + result.item);
+         setShowResultEvent('+ ' + result.item);
          itemAdd(result.item, currentUser);
-         levelUpdate(result.xp, currentUser);
+         levelUpdate(result.xp, currentUser, healthBar);
         } else {
          setShowResult('Fail');
          setShowResultEvent('You have received nothing');
         }
         }
        };
-
        decideOutcome(outcome);
      }
   
@@ -200,7 +210,7 @@ const images = require.context('../../public/images', true);
      axios.post(serverUrl + '/buildSkills', userInfo)
       .then(response => { 
         let skills = response.data.doc;
-      //  console.log(skills)
+        console.log(skills)
       })
       .catch(error => {
        console.error('Error:', error);
@@ -220,8 +230,9 @@ const images = require.context('../../public/images', true);
         let type = response.data.stageType;
         let curLevel = response.data.curStage;
         let stageText = response.data.curStageText;
-
-        sendOptions(options, playerName);
+        if(type !== 'location'){
+          sendOptions(options, playerName, type);
+        }
 
         if(stageText){
           setShowText(true);
@@ -236,37 +247,25 @@ const images = require.context('../../public/images', true);
       });
   };
 
-  const nextStage = (currentUser, level, type) => { 
+  const nextStage = (currentUser, level, type) => {
       buttons.forEach((button) => {
         button.className = 'game-btn';
-      });
+      })  
+
       let stageInfo = {
         username: currentUser,
         level: level,
         type: type,
       };
-      let resetChoices = {
-        username: currentUser,
-      };
-
-      // clear choices here
-      axios.post(serverUrl + '/clearInactive', resetChoices)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-       console.error('Error:', error);
-      });
-
+      
       axios.post(serverUrl + '/stageChange', stageInfo)
       .then(response => {
-        console.log(response.data);
+        getLevel(currentUser);
       })
       .catch(error => {
        console.error('Error:', error);
       });
-
-     getLevel(currentUser);
+      
   }
 
   const showSquare = (bool) => {
@@ -279,16 +278,15 @@ const images = require.context('../../public/images', true);
     getLevel(playerName);
   }, []);
 
-  console.log(options);
-  
   return (
     <div> 
         <>
          <div className='HUD'>
            <h2>{playerName}</h2>
-           <h3 id='level-num'>Level: {curStage}</h3>
-           <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>
-          
+           {!stageType == 'location' ? (
+             <h3 id='level-num'>Level: {curStage}</h3>
+           ) : ''}      
+           <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>        
          </div>
 
         {!showText ? (
@@ -300,7 +298,7 @@ const images = require.context('../../public/images', true);
               <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>
             
               </div> 
-              <button onClick={() => showSquare(false)} id='close-square' type="submit">Begin</button>
+              <button onClick={() => showSquare(false)} id='close-square' type="submit">Next</button>
             </div>
            </div>
           </> 
@@ -308,27 +306,27 @@ const images = require.context('../../public/images', true);
 
          <div className='game-options'>
         {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth}/> : 
-        <div className='option-container'> 
-         {options.map((option, index) => (
+         <div className='option-container'> 
+          {options.map((option, index) => (
           <div key={index}>
             <button 
-              onClick={(event) => {setInactive(event, playerName, curStage); triggerResult(playerName, option.result, option.difficulty)}}
+               onClick={(event) => {setInactive(event, playerName, curStage); triggerResult(playerName, option.result, option.difficulty)}}
                className={option.class} id={option.difficulty} type="submit">
               {option.name}
             </button>
           </div>  
-         ))}
-         {showResult && (
+          ))}
+          {showResult && (
          <div className='result-div'>
-         <div className='result-info'>
+          <div className='result-info'>
            <h1>{showResult}</h1>
            <h3>{showResultEvent}</h3>
            <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
-         </div> 
+          </div> 
          </div>
-         )}
-         <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>
-        </div>
+          )}
+          {(stageType === 'location') ? '' : <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>}
+         </div>
         }
          </div>
         </> 

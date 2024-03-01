@@ -227,12 +227,11 @@ const Stages = [
           name: 'search1',
           text:
           "<h2>In the BranchTest, your personality affects the success and outcomes of your decisions</h2>" +
-          "<div class='choice-diagram'>" +
-             
+           "<div class='choice-diagram'>" +
             "<div class='diff-div'><img class='diff-exp' src='images/easy.png'></img><h3> = Easy</h3></div>" +
             "<div class='diff-div'><img class='diff-exp' src='images/medium.png'></img><h3> = Medium</h3></div>" +
             "<div class='diff-div'><img class='diff-exp' src='images/hard.png'></img><h3> = Hard</h3></div>" +
-          "</div>",        
+           "</div>",        
           stageInfo: {
              level:1.1,
              type: 'search',
@@ -287,7 +286,7 @@ const Stages = [
       },
       {
           name:'location1',
-          text: 'hello',    
+          text: "<h2>Choose your next location</h2>",    
           stageInfo: {
              level:1.2,
              type: 'location', 
@@ -312,7 +311,7 @@ const Stages = [
       },
       {
         name: 'Office',
-        text: 'hello',
+        text: 'Looking in the office',
         stageInfo: {
            level:1.3,
            type: 'search',
@@ -322,7 +321,10 @@ const Stages = [
               type: 'Physical',
               stat: 'strength',
               probability: 1,
-              result: 'Jacket',
+              result: {
+                item: 'Coins',
+                xp: 0
+              },
               class:'game-btn'
             },
             {
@@ -330,7 +332,10 @@ const Stages = [
               type: 'Mental',
               stat: 'intuition',
               probability: 1,
-              result: 'Med-kit',
+              result: {
+                item: 'Coins',
+                xp: 0
+              },
               class:'game-btn'
             },
             {
@@ -338,7 +343,10 @@ const Stages = [
               type: 'Mental',
               stat: 'intuition',
               probability: 1,
-              result: 'Med-kit',
+              result: {
+                item: 'Stick',
+                xp: 30
+              },
               class:'game-btn'
             },
             {
@@ -346,7 +354,10 @@ const Stages = [
               type: 'Mental',
               stat: 'intuition',
               probability: 1,
-              result: 'Med-kit',
+              result: {
+                item: 'Tape',
+                xp: 50
+              },
               class:'game-btn'
             },
            ],
@@ -362,13 +373,14 @@ const Stages = [
            type: 'combat',
            result: {
             item: 'Med-kit',
-            xp: 100
+            xp: 100,
+            
            }
         },
       },
 ];
 
-// All stages
+// DB info -> stage info
 app.post('/currentStage', async (req, res) => {
     const {username} = req.body;
     
@@ -398,7 +410,6 @@ app.post('/currentStage', async (req, res) => {
              });   
              res.status(200).json({stageType, options, curStage, curStageText});
            } else {
-            console.log(options);
              res.status(200).json({stageType, options, curStage, curStageText});
            };
           break;
@@ -410,7 +421,6 @@ app.post('/currentStage', async (req, res) => {
       let doc = await PlayerModel.findOne({ username: username });
       if (doc) { 
         const userProgress = doc.progress.levelNum;
-        console.log("Player's progress "+ userProgress)
         const userStats = doc.stats;
         await buildOptions(userProgress, userStats);
       }
@@ -452,7 +462,6 @@ app.post('/itemSearch', async (req, res) => {
 app.post('/receiveInv', async (req, res) => {
   const {username} = req.body;
   let doc = await PlayerModel.findOne({ username: username });
-  
   let playerItems = doc.inventory;
 try {
   res.send({playerItems})
@@ -470,14 +479,12 @@ app.post('/stageChange', async (req, res) => {
     const levelUpdate = {
       levelNum: level,
       choices: []
-    }; // wipe choices array
+    };
 
-    // used to update database for progression
     if(type === 'location'){
        for (let i = 0; i < Stages.length; i++) {
          if(Stages[i].stageInfo.level === level){
           await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
-          break;
          }
        };
     } else if(type === 'search'){
@@ -485,10 +492,9 @@ app.post('/stageChange', async (req, res) => {
         let stageInfo = Stages[i].stageInfo;
          if(stageInfo.level === level) {
           nextStage = stageInfo.result;
-          console.log('Next Stage: ' + nextStage);
           levelUpdate.levelNum = nextStage;
           await PlayerModel.updateOne({username: username},{ $set: { progress:levelUpdate}});
-          break;
+          
          } 
        };
     };
@@ -504,26 +510,22 @@ app.post('/stageChange', async (req, res) => {
 
 app.post('/setInactive', async (req, res) => {
   const {choices, stage, username} = req.body;
-
   const levelUpdate = {
     levelNum: stage,
     choices: choices,
   };
-
   await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
 });
 
 app.post('/startInactive', async (req, res) => {
   const {choices, username} = req.body;
   let doc = await PlayerModel.findOne({username: username});
-
   const selectedChoices = doc.progress.choices;
   let curChoices = choices;
 
   for(let i=0; i<curChoices.length; i++){
     if(selectedChoices[i] === curChoices[i].name){
       curChoices[i].class = 'game-btn-clicked';
-      console.log(curChoices[i].name + ' was selected');
     }
   };
   try {
@@ -534,26 +536,6 @@ app.post('/startInactive', async (req, res) => {
   };
   
 });
-
-app.post('/clearInactive', async (req, res) => {
-  const {level, username} = req.body;
-  const emptyChoices = [];
-  const levelUpdate = {
-    levelNum: level,
-    choices: emptyChoices,
-  };
-
-  await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
-  try {
-    res.send('Choices cleared');
-  } catch (err) {
-      console.error('Error', err);
-      res.status(500).json({ message: "An error has occurred" });
-  };
-  
-});
-
-
 
 // Combat Level
 app.post('/combatStart', async (req, res) => {
@@ -578,12 +560,13 @@ app.post('/combatStart', async (req, res) => {
 });
 
 app.post('/receiveSkills', async (req, res) => {
-   const {username} = req.body;
-   let doc = await PlayerModel.findOne({ username:username});
-   const userSkills = doc.skills;
+   const {username, type} = req.body;
+   let doc = await PlayerModel.findOne({ username:username });
+   let combatData = doc.attacks;
+
 
   try {
-    res.status(200).send({userSkills});
+    res.status(200).send({combatData});
   } catch (err) {
     console.error('Error', err);
     res.status(500).json({ message: "An error has occurred" });
@@ -679,9 +662,8 @@ app.post('/levelUpdate', async(req, res) => {
   };
 });
 
-
 connect();
 
 app.listen(3000, () => {
-//  console.log('Server started on port 3000');
+  console.log('Server started on port 3000');
 });

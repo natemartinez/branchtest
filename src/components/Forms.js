@@ -236,7 +236,6 @@ const Quiz = (username) => {
   const currentUser = username;
   
   const handleAnswerSelect = (answer) => {
-      // Need to set a new copy of array to update
       const updatedAnswers = [...userAnswers];
       updatedAnswers[currentQuestion] = answer;
       setUserAnswers(updatedAnswers);
