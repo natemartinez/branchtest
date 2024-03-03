@@ -6,7 +6,7 @@ import { ProgressBar } from 'react-bootstrap';
 import serverUrl from './config';
 const images = require.context('../../public/images', true);
 
-const Combat = ({level, username, playerHealth}) => {
+const Combat = ({level, username, playerHealth, stageChange}) => {
     const [curEnemies, setCurEnemies] = useState([]);   
     const [Options, setOptions] = useState([]);   
     const [text, setText] = useState("What's your move?");   
@@ -18,6 +18,7 @@ const Combat = ({level, username, playerHealth}) => {
     const [selectedAttack, setSelectedAttack] = useState(null);
     const [userTurn, setUserTurn] = useState(true);
     const [healthBar, setHealthBar] = useState(null);
+    const [showResult, setShowResult] = useState(false);
 
     const setHealth = (health) => {
       setHealthBar(health);
@@ -108,12 +109,17 @@ const Combat = ({level, username, playerHealth}) => {
           try {
              const response = await axios.post(serverUrl + '/attackAction', curAttack);
              let attackResult = response.data.attackEvent;
-             curEnemiesUpdate[enemyIndex] = attackResult.enemy;
+             let curEnemy = attackResult.enemy;
+             if(curEnemy.status.curHealth == 0){
+               curEnemy.status.condition = 'dead';
+             };
+             curEnemiesUpdate[enemyIndex] = curEnemy;
              setCurEnemies(curEnemiesUpdate);
           } catch (error) {
              console.error('Error:', error);
           }
         }
+
         getAttack(option);
         setAttackBegin(false);
         setSelectedEnemy(null);
@@ -123,24 +129,36 @@ const Combat = ({level, username, playerHealth}) => {
       }
     };
 
-    const useItem = (item, health) => {
-      // need to affect player's stats in this function
-      // should I change state?
-      // if type is healing then affect healthBar
-      // I have to first see if I can change the state of healthBar with no errors
-       let newHP;
+    const removeItem = (username, item) => {
+      item.class = 'used-item';
+      let itemInfo = {
+        username: username,
+        item: item
+      };
 
+      axios.post(serverUrl + '/removeItem', itemInfo)
+       .then(response => { 
+        console.log(response.data)
+       })
+       .catch(error => {
+       console.error('Error:', error);
+       });
+
+    };
+
+    const useItem = (item, health) => {
+       let newHP;
        if(item.type === 'healing'){
          newHP = health + item.num;
          if(newHP > 100){
            newHP = 100;
          };
+        setHealth(newHP); 
        }
-
-       setHealth(newHP);
-
+       
+       removeItem(username, item);
+       setUserTurn(false);
        // send to function that removes item from database
-
     };
     
     const holdAttack = (option, health) => {
@@ -188,6 +206,42 @@ const Combat = ({level, username, playerHealth}) => {
        });
     };
 
+    const checkForDead = (curEnemies, username) => {
+      let deadEnemies = [];
+      for(let i=0; i < curEnemies.length; i++){
+        if(curEnemies[i].status.condition === 'dead'){
+          deadEnemies.push(curEnemies[i]);
+          if(curEnemies.length == deadEnemies.length){
+            setShowResult(true);
+            setText('You Won!')
+          //  nextStage(username, level, 'combat');
+          }
+        } else{
+          break
+        }  
+      }
+    };
+
+    const nextStage = (username, level, type) =>{
+      // dig into server to find the result of this current level
+      let result = '';
+      let userInfo = {
+        level: level,
+        username:username,
+        type: type
+      };
+
+      axios.post(serverUrl + '/stageChange', userInfo)
+       .then(response => { 
+        result = response.data.nextStage;
+        stageChange(username, result, type);
+       })
+       .catch(error => {
+       console.error('Error:', error);
+       });  
+    };
+    
+
     useEffect(() => {
        getItems(username);
     }, [showItems]);
@@ -202,7 +256,7 @@ const Combat = ({level, username, playerHealth}) => {
     useEffect(() => {
         if(userTurn && attackBegin){
           newText('Choose an enemy')
-        }else if(userTurn === false){
+        }else if(userTurn === false){    
           newText("Enemy's Turn")
           setTimeout(() => enemyTurn(healthBar), 1500);
           setTimeout(() => newText('Ghost slapped you!'), 3000);
@@ -217,6 +271,10 @@ const Combat = ({level, username, playerHealth}) => {
         setSelectedAttack(null);
         changeToAttack(username);
     }, [showAttacks]);
+
+    useEffect(() => {
+      checkForDead(curEnemies, username);
+    }, [curEnemies])
 
 
     useEffect(() => {
@@ -248,7 +306,6 @@ const Combat = ({level, username, playerHealth}) => {
      </> 
    );
   }
-    
   const UserCombat = () => {
 
     const RegOptions = () => {
@@ -263,7 +320,7 @@ const Combat = ({level, username, playerHealth}) => {
     const AttackOptions = () => {
       return (
         <>
-          {Options.map((option, index) => (
+        {Options.map((option, index) => (
            <div key={index}>
              <button 
                 className='action-btn' type='button' onClick={() => {holdAttack(option)}}>
@@ -271,7 +328,7 @@ const Combat = ({level, username, playerHealth}) => {
              </button>
            </div>  
          ))}
-          <button className='action-btn' type="button" onClick={() => setShowAttacks(false)}>Back</button>
+        <button className='action-btn' type="button" onClick={() => setShowAttacks(false)}>Back</button>
         </>
       );
     };
@@ -281,7 +338,7 @@ const Combat = ({level, username, playerHealth}) => {
           {Items.map((option, index) => (
            <div key={index}>
              <button 
-                className='action-btn' type='button' onClick={() => {holdAttack(option, healthBar)}}>
+                className={option.class} type='button' onClick={() => {holdAttack(option, healthBar)}}>
                 {option.name}
              </button>
            </div>  
@@ -291,7 +348,6 @@ const Combat = ({level, username, playerHealth}) => {
       );
     };
     
-
     return (
       <div className='option-div'>      
         {(!showAttacks && !showItems) && <RegOptions/> }
@@ -300,11 +356,25 @@ const Combat = ({level, username, playerHealth}) => {
       </div>
     );
   }
+  const Result = () => {
+    
+    return (
+      <div className='result-div'>
+        {showResult && 
+          <div className='result-info'>
+           <h2 className='combat-result'>{text}</h2>
+           <button className='action-btn' onClick={() => nextStage(username, level, 'combat')}>Next</button>
+         </div>
+        } 
+      </div>
+    );
+  }
 
   return (
     <div>
-      <Enemies/>
-      <UserCombat />
+      <Result/>    
+      {!showResult && <Enemies/>} 
+      {!showResult && <UserCombat />}
     </div>
   );
 }

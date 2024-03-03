@@ -366,7 +366,7 @@ const Stages = [
       },
       {
         name:'battle1',
-        text: 'hello',
+        text: 'You have been attacked by ghosts! <br> Time to fight!',
         stageInfo: {
            level: 1.7,
            enemies:['ghost', 'ghost'],
@@ -374,10 +374,36 @@ const Stages = [
            result: {
             item: 'Med-kit',
             xp: 100,
-            
+            next: 1.8,
+            type: 'location'
            }
         },
       },
+      {
+        name:'location1',
+        text: "Choose your next location",    
+        stageInfo: {
+           level:1.8,
+           type: 'location', 
+           options:[
+            {
+              name:'Upstairs',
+              result: 5.1,
+              class:'game-btn'
+            },
+            {
+              name:'Downstairs',
+              result: 4.1,
+              class:'game-btn'
+            },
+            {
+              name:'Outside',
+              result: 3.1,
+              class:'game-btn'
+            },
+           ]   
+        },
+    },
 ];
 
 // DB info -> stage info
@@ -471,6 +497,27 @@ try {
 };
 });
 
+app.post('/removeItem', async (req, res) => {
+  const {username, item} = req.body;
+  let doc = await PlayerModel.findOne({ username: username });
+  let newInventory = doc.inventory;
+
+  for(let i=0; i < newInventory.length; i++){
+    if(newInventory[i].name === item.name){
+      newInventory.splice(i, 1);
+    }
+  }
+
+  await PlayerModel.updateOne({ username: username }, { $set: {inventory: newInventory} });
+
+try {
+  res.send('Item removed')
+} catch (err) {
+    console.error('Error', err);
+    res.status(500).json({ message: "An error has occurred" });
+};
+});
+
 // Stage progression
 app.post('/stageChange', async (req, res) => {
     const {username, level, type} = req.body;
@@ -497,8 +544,16 @@ app.post('/stageChange', async (req, res) => {
           
          } 
        };
+    } else if(type === 'combat'){
+       for (let i = 0; i < Stages.length; i++) {
+        let curStageLevel = Stages[i].stageInfo.level;
+          if(curStageLevel === level) {
+            nextStage = Stages[i].stageInfo.result;
+            levelUpdate.levelNum = nextStage.next;
+            await PlayerModel.updateOne({username: username},{ $set: { progress:levelUpdate}});
+          } 
+       };
     };
-    //
 
     try {
       res.send({nextStage});
@@ -662,8 +717,6 @@ app.post('/levelUpdate', async(req, res) => {
 app.post('/healthUpdate', async(req, res) => {
   const {username, health} = req.body;
   let doc = await PlayerModel.findOne({ username:username });
-  // we receive the doc to update the health property
-  // while keeping the level property in tact
 
   let userEXP = doc.status.level.exp;
   let expCap = doc.status.level.cap;
@@ -693,8 +746,6 @@ app.post('/healthUpdate', async(req, res) => {
     res.status(500).json({ message: "An error has occurred" });
   };
 });
-
-
 
 connect();
 

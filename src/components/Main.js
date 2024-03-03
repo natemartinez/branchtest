@@ -140,15 +140,15 @@ const images = require.context('../../public/images', true);
   };
 
   const levelUpdate = (exp, playerName, health) => {
-    console.log('HP: ' + health);
-    const itemInfo = {
+    const levelInfo = {
       username:playerName,
       expUpdate:exp,
       health:health
     };
-    axios.post(serverUrl + '/levelUpdate', itemInfo)
+    axios.post(serverUrl + '/levelUpdate', levelInfo)
       .then(response => { 
         let messageUpdate = response.data;
+        console.log(messageUpdate);
       })
       .catch(error => {
        console.error('Error:', error);
@@ -249,14 +249,26 @@ const images = require.context('../../public/images', true);
   const nextStage = (currentUser, level, type) => {
       buttons.forEach((button) => {
         button.className = 'game-btn';
-      })  
+      });
 
       let stageInfo = {
         username: currentUser,
         level: level,
         type: type,
       };
-      
+
+      if(type == 'combat'){
+        let item = level.item;
+        let xp = level.xp;
+        itemAdd(item, currentUser);
+        levelUpdate(xp, currentUser, healthBar);
+        stageInfo = {
+          username: currentUser,
+          level: level.next,
+          type: level.type,
+        };
+      }
+
       axios.post(serverUrl + '/stageChange', stageInfo)
       .then(response => {
         getLevel(currentUser);
@@ -264,7 +276,7 @@ const images = require.context('../../public/images', true);
       .catch(error => {
        console.error('Error:', error);
       });
-      
+  
   }
 
   const showSquare = (bool) => {
@@ -287,11 +299,10 @@ const images = require.context('../../public/images', true);
            ) : ''}      
            <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>        
          </div>
-
-        {!showText ? (
+         {!showText ? (
           ''
-        ) : (
-          <>
+         ) : (
+           <>
            <div className='game-info-div'>
             <div className='game-info-square'>
               <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>
@@ -300,11 +311,10 @@ const images = require.context('../../public/images', true);
               <button onClick={() => showSquare(false)} id='close-square' type="submit">Next</button>
             </div>
            </div>
-          </> 
-        )}
-
+           </> 
+         )}
          <div className='game-options'>
-          {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth}/> : 
+          {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth} stageChange={nextStage}/> : 
            <div className='option-container'> 
           {options.map((option, index) => (
           <div key={index}>
@@ -317,11 +327,11 @@ const images = require.context('../../public/images', true);
           ))}
           {showResult && (
            <div className='result-div'>
-          <div className='result-info'>
-           <h1>{showResult}</h1>
-           <h3>{showResultEvent}</h3>
-           <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
-          </div> 
+             <div className='result-info'>
+              <h1>{showResult}</h1>
+              <h3>{showResultEvent}</h3>
+              <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
+             </div> 
            </div>
           )}
           {(stageType === 'location') ? '' : <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>}

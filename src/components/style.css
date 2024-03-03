@@ -699,6 +699,9 @@ body{
 .back-arrow{
     width: 5em;
 }
+.used-item{
+    display: none;
+}
 
 /* Bio Screen */
 .bio-top{
