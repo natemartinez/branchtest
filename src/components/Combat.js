@@ -299,7 +299,7 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
          <img className='enemy-img'
          src={images(`./${element.name}.png`)} alt=""/>
          <p>{element.name}</p> 
-         <ProgressBar max={20} now={curEnemies[index].status.curHealth} />
+         <ProgressBar max={curEnemies[index].status.maxHealth} now={curEnemies[index].status.curHealth} />
         </div> 
        ))}
       </div>
@@ -372,7 +372,7 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
 
   return (
     <div>
-      <Result/>    
+      {showResult && <Result/>}    
       {!showResult && <Enemies/>} 
       {!showResult && <UserCombat />}
     </div>
