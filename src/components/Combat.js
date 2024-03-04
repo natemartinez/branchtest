@@ -23,17 +23,23 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
     const setHealth = (health) => {
       setHealthBar(health);
       playerHealth(health);
+
       let userInfo = {
         username: username,
         health: health
       }
       axios.post(serverUrl + '/healthUpdate', userInfo)
-        .then(response => { 
-          console.log(response.data);
+        .then(response => {
+
         })
         .catch(error => {
          console.error('Error:', error);
         }); 
+
+        if(health <= 0){
+          setShowResult(true);
+        }
+        
     };
 
     const getHealth = async(username) => {
@@ -43,8 +49,11 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
   
       axios.post(serverUrl + '/receiveStatus', userInfo)
         .then(response => { 
-          let hpData = response.data.doc.status;
-          setHealth(hpData.health)
+          let hpData = response.data.doc.status.health;
+          if(hpData <= 0){
+            hpData = 100;
+          };
+          setHealth(hpData)
         })
         .catch(error => {
          console.error('Error:', error);
@@ -96,7 +105,6 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
         console.error('Error:', error);
      }
     };
-
     // User's attack 
     const attackStart = (option, enemyIndex) => {
       let curEnemiesUpdate = [...curEnemies];
@@ -206,7 +214,7 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
        });
     };
 
-    const checkForDead = (curEnemies, username) => {
+    const checkForDead = (curEnemies) => {
       let deadEnemies = [];
       for(let i=0; i < curEnemies.length; i++){
         if(curEnemies[i].status.condition === 'dead'){
@@ -214,7 +222,6 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
           if(curEnemies.length == deadEnemies.length){
             setShowResult(true);
             setText('You Won!')
-          //  nextStage(username, level, 'combat');
           }
         } else{
           break
@@ -240,7 +247,6 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
        console.error('Error:', error);
        });  
     };
-    
 
     useEffect(() => {
        getItems(username);
@@ -259,10 +265,9 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
         }else if(userTurn === false){    
           newText("Enemy's Turn")
           setTimeout(() => enemyTurn(healthBar), 1500);
-          setTimeout(() => newText('Ghost slapped you!'), 3000);
+          setTimeout(() => newText('Ghost slapped you!'), 3000);  
           setTimeout(() => newText("What's your move?"), 5000);   
         }
-
     }, [userTurn, attackBegin]);
     
     useEffect(() => { 
@@ -273,7 +278,7 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
     }, [showAttacks]);
 
     useEffect(() => {
-      checkForDead(curEnemies, username);
+      checkForDead(curEnemies);
     }, [curEnemies])
 
 
@@ -360,12 +365,17 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
     
     return (
       <div className='result-div'>
-        {showResult && 
-          <div className='result-info'>
-           <h2 className='combat-result'>{text}</h2>
-           <button className='action-btn' onClick={() => nextStage(username, level, 'combat')}>Next</button>
-         </div>
-        } 
+        {(healthBar <= 0) ? 
+           <div className='result-info'>
+             <h2 className='combat-result'>You Lost!</h2>
+             <button className='action-btn' onClick={() => window.location.reload()}>Retry</button>
+           </div> : 
+           <div className='result-info'>
+             <h2 className='combat-result'>You Won!</h2>
+             <button className='action-btn' onClick={() => nextStage(username, level, 'combat')}>Next</button>
+           </div>
+        }
+          
       </div>
     );
   }

@@ -294,7 +294,7 @@ const images = require.context('../../public/images', true);
         <>
          <div className='HUD'>
            <h2>{playerName}</h2>
-           {!stageType == 'location' ? (
+           {stageType == 'location' ? (
              <h3 id='level-num'>Level: {curStage}</h3>
            ) : ''}      
            <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>        
@@ -305,8 +305,7 @@ const images = require.context('../../public/images', true);
            <>
            <div className='game-info-div'>
             <div className='game-info-square'>
-              <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>
-            
+              <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>     
               </div> 
               <button onClick={() => showSquare(false)} id='close-square' type="submit">Next</button>
             </div>
@@ -316,16 +315,16 @@ const images = require.context('../../public/images', true);
          <div className='game-options'>
           {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth} stageChange={nextStage}/> : 
            <div className='option-container'> 
-          {options.map((option, index) => (
-          <div key={index}>
+           {options.map((option, index) => (
+           <div key={index}>
             <button 
                onClick={(event) => {setInactive(event, playerName, curStage); triggerResult(playerName, option.result, option.difficulty)}}
                className={option.class} id={option.difficulty} type="submit">
               {option.name}
             </button>
-          </div>  
-          ))}
-          {showResult && (
+           </div>  
+           ))}
+           {showResult && (
            <div className='result-div'>
              <div className='result-info'>
               <h1>{showResult}</h1>
@@ -333,8 +332,8 @@ const images = require.context('../../public/images', true);
               <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
              </div> 
            </div>
-          )}
-          {(stageType === 'location') ? '' : <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>}
+           )}
+           {(stageType === 'location') ? '' : <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>}
          </div>
         }
          </div>

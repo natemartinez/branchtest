@@ -283,7 +283,7 @@ const Stages = [
              ],
              result:1.2
           },     
-      },
+      },//1.1
       {
           name:'location1',
           text: "<h2>Choose your next location</h2>",    
@@ -308,7 +308,7 @@ const Stages = [
               },
              ]   
           },
-      },
+      },//1.2
       {
         name: 'Office',
         text: 'Looking in the office',
@@ -363,7 +363,62 @@ const Stages = [
            ],
            result: 1.7
         }, 
-      },
+      },//1.3
+      {
+        name: 'Hallway',
+        text: 'Looking in the hallway',
+        stageInfo: {
+           level:1.4,
+           type: 'search',
+           options:[
+            {
+              name:'Janitor closet',
+              type: 'Physical',
+              stat: 'strength',
+              probability: 1,
+              result: {
+                item: 'Coins',
+                xp: 0
+              },
+              class:'game-btn'
+            },
+            {
+              name:'File cabinet',
+              type: 'Mental',
+              stat: 'intuition',
+              probability: 1,
+              result: {
+                item: 'Coins',
+                xp: 0
+              },
+              class:'game-btn'
+            },
+            {
+              name:'Check the whiteboard',
+              type: 'Mental',
+              stat: 'intuition',
+              probability: 1,
+              result: {
+                item: 'Stick',
+                xp: 30
+              },
+              class:'game-btn'
+            },
+            {
+              name:'Check the windows',
+              type: 'Mental',
+              stat: 'intuition',
+              probability: 1,
+              result: {
+                item: 'Tape',
+                xp: 50
+              },
+              class:'game-btn'
+            },
+           ],
+           result: 1.7
+        }, 
+      },//1.4
       {
         name:'battle1',
         text: 'You have been attacked by ghosts! <br> Time to fight!',
@@ -378,7 +433,7 @@ const Stages = [
             type: 'location'
            }
         },
-      },
+      },//1.7
       {
         name:'location1',
         text: "Choose your next location",    
@@ -403,7 +458,7 @@ const Stages = [
             },
            ]   
         },
-    },
+      },//1.8
 ];
 
 // DB info -> stage info
@@ -523,14 +578,17 @@ app.post('/stageChange', async (req, res) => {
     const {username, level, type} = req.body;
     let nextStage;
 
-    const levelUpdate = {
+    let levelUpdate = {
       levelNum: level,
       choices: []
     };
+;
 
     if(type === 'location'){
        for (let i = 0; i < Stages.length; i++) {
-         if(Stages[i].stageInfo.level === level){
+         let stageInfo = Stages[i].stageInfo;
+         if(stageInfo.level === level){
+          levelUpdate.levelNum = level;
           await PlayerModel.updateOne({username: username},{ $set: {progress: levelUpdate}});
          }
        };
@@ -541,7 +599,6 @@ app.post('/stageChange', async (req, res) => {
           nextStage = stageInfo.result;
           levelUpdate.levelNum = nextStage;
           await PlayerModel.updateOne({username: username},{ $set: { progress:levelUpdate}});
-          
          } 
        };
     } else if(type === 'combat'){

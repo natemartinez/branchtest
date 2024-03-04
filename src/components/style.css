@@ -722,6 +722,36 @@ body{
     align-items: center;
     margin-bottom: 4em;
 }
+.bio-header-wrapper{
+    display: flex;
+    position: relative;
+}
+#bio-header{
+    margin: 0 auto;
+    font-size: 2em;
+}
+.stat-div ul {
+    list-style: none;
+}
+.archetype-div{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 3em 1em;
+}
+.archetype-div h2{
+    font-size: 2em;
+}
+.archetype-img{
+    width: 7em;
+}
+#Fierce{
+    margin-right: 3em;
+}
+
+#stat-section{
+    margin-bottom: 3em;
+}
 
 /* Skill Screen */
 #skill-sec{

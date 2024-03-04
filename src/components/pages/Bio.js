@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import '../style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -6,25 +7,75 @@ import { Link } from 'react-router-dom';
 import {useLocation} from 'react-router-dom';
 import serverUrl from '../config';
 const images = require.context('../../../public/images', true);
-// Placed hp here to display combat changes inside HUD
+
   const Info = ({ playerName }) => {
     // search in DB for player's info
     // show name, traits, stats, 
+    // eventually I want to show archetype based on choices
+    const [stats, setStats] = useState([]);
+    const [personality, setPersonality] = useState([]);
 
-    const testData = [
+   /* const testData = [
       { bgcolor: "#6a1b9a", completed: 60 },
       { bgcolor: "#00695c", completed: 30 },
       { bgcolor: "#ef6c00", completed: 53 },
-    ];
+    ]; */
 
-    return (
+    const getData = (username) => {
+
+      let userInfo = {
+        username:username
+      };
+
+      axios.post(serverUrl + '/receiveStatus', userInfo)
+       .then(response => { 
+        const userData = response.data.doc;
+        setPersonality(userData.personality);
+        setStats(userData.stats)
+        console.log(userData.status);
+       })
+       .catch(error => {
+       console.error('Error:', error);
+       });  
+    }
+
+  
+    useEffect(() => {
+      getData(playerName)
+    }, []);
+
+
+    return ( 
       <>
-        <div>
-         {testData.map((item, index) => (
-         <ProgressBar key={index} bgcolor={item.bgcolor} now={item.completed} />
-         ))
-         }
-        </div>
+        <header className='bio-header-wrapper'>
+         <h2 id='bio-header'>Your Archetype:</h2>
+        </header>
+        
+        <section id='type-section'>
+          {personality.map((trait, index) => (
+           <div id={trait} key={index} className='archetype-div'>    
+             <img className='archetype-img' src={images(`./${trait}.png`)}></img>
+             <h2>{trait}</h2>
+           </div>
+           ))
+          }
+        </section>
+        <section id='stat-section'>
+        {Object.keys(stats).map(category => (
+         <div id={category} className='stat-div' key={category}>
+          <div>
+            <img className='stat-bkgrd' alt="icon"></img>
+            <h2>{category}</h2>
+            <ul>
+             {Object.entries(stats[category]).map(([trait, value]) => (
+             <li key={trait}>
+              {trait}: {value}
+             </li>
+             ))}
+            </ul>
+          </div>
+       </div> ))} 
+        </section>
       </>
     )
   };
