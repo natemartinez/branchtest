@@ -43,9 +43,12 @@ body{
     font-size: 1.5em;
     margin-top: 1em;
 }
+.logo-div h2{
+    font-weight: bold;
+}
 .logo{
     width: 8em;
-    margin-bottom: 2em;
+    margin-bottom: 5em;
 }
 
 .form-btn-div{
@@ -138,6 +141,31 @@ body{
     border: none;
     border-radius: 10px;
    }
+}
+
+@media screen and (min-width:1024px){
+    .logo-div h2{
+        font-size: 2em;
+    }
+    .logo-div{
+        margin-top:5em;
+    }
+    .logo{
+        width: 14em;
+    }
+    .form-btn{
+        width: 8em;
+        height: 3.5em;
+        font-size: 2.5em;
+    }
+    .info-square{
+        width: 40em!important;
+        height: 35em!important;
+        padding: 5em;
+    }
+    #close-square{
+        margin-top: 2em!important;
+    }
 }
 
 /*Quiz Screen*/
