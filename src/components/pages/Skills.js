@@ -14,6 +14,7 @@ const images = require.context('../../../public/images', true);
     const [playerLevel, setPlayerLevel] = useState(null);
     const [curEXP, setCurEXP] = useState(null);
     const [levelCap, setLevelCap] = useState(null);
+    const [points, setPoints] = useState(null);
     const [skills, setSkills] = useState([]);
 
     // Check DB for skills that player has
@@ -47,6 +48,7 @@ const images = require.context('../../../public/images', true);
        setPlayerLevel(curEXP.num);
        setCurEXP(curEXP.exp);
        setLevelCap(curEXP.cap);
+       setPoints(curEXP.point);
       })
       .catch(error => {
       console.error('Error:', error);
@@ -58,8 +60,6 @@ const images = require.context('../../../public/images', true);
         for(let i=0; i<activeSkills.length;i++){
           if(activeSkills == element.id){
             element.className = 'phys-box active';
-          }else{
-            console.log('not a match')
           }
         };
       });
@@ -85,8 +85,8 @@ const images = require.context('../../../public/images', true);
           <h2>XP: </h2>
           <h3>{curEXP} / {levelCap}</h3>
         </div>
-        
         <ProgressBar id='level-bar' max={levelCap} now={curEXP} />
+        <h2>Skill points to use: {points}</h2>
       </div>
       <div id='skill-sec'>
         <div className='skill-div' id='phys-div'>

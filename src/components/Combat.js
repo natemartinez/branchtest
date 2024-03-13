@@ -90,29 +90,34 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
     };
 
     // Enemy's attack 
-    const enemyTurn = async (playerHP) => { 
+    const enemyTurn = async (playerHP, username) => { 
+      console.log(username);
       let enemyInfo = {
         enemies: curEnemies,
-        playerHP:playerHP
+        playerHP:playerHP,
+        username:username,
       };
 
       try {
         const response = await axios.post(serverUrl + '/enemyAttack', enemyInfo);
         const updatedHP = response.data.newPlayerHP;
+        const message = response.data.message;
         setHealth(updatedHP);
+        setTimeout(() => newText(message), 3000);
         setUserTurn(true);
      } catch (error) {
         console.error('Error:', error);
      }
     };
     // User's attack 
-    const attackStart = (option, enemyIndex) => {
+    const attackStart = (option, enemyIndex, username) => {
       let curEnemiesUpdate = [...curEnemies];
       if(option !== null && enemyIndex !== null){
         const getAttack = async (attack) => {
           let curAttack = {
             attack:attack,
             enemy: curEnemies[enemyIndex],
+            username: username
           };
           try {
              const response = await axios.post(serverUrl + '/attackAction', curAttack);
@@ -264,8 +269,7 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
           newText('Choose an enemy')
         }else if(userTurn === false){    
           newText("Enemy's Turn")
-          setTimeout(() => enemyTurn(healthBar), 1500);
-          setTimeout(() => newText('Ghost slapped you!'), 3000);  
+          setTimeout(() => enemyTurn(healthBar, username), 1500); 
           setTimeout(() => newText("What's your move?"), 5000);   
         }
     }, [userTurn, attackBegin]);

@@ -676,7 +676,6 @@ app.post('/receiveSkills', async (req, res) => {
    let doc = await PlayerModel.findOne({ username:username });
    let combatData = doc.attacks;
 
-
   try {
     res.status(200).send({combatData});
   } catch (err) {
@@ -686,8 +685,14 @@ app.post('/receiveSkills', async (req, res) => {
 });
 
 app.post('/attackAction', async(req, res) => {
-  const {attack, enemy} = req.body;
+  const {attack, enemy, username} = req.body;
   let attackedEnemy = enemy;
+ // let doc = await PlayerModel.findOne({ username:username });
+
+  // stats like willpower will increase critical rate as health goes down
+  // use stats to increase or possibility decrease attack success and DMG
+
+
   attackedEnemy.status.curHealth -= attack.baseDMG;
 
   if(attackedEnemy.status.curHealth > 0){
@@ -709,16 +714,39 @@ app.post('/attackAction', async(req, res) => {
 });
 
 app.post('/enemyAttack', async(req, res) => {
-  const {enemies, playerHP} = req.body;
+  const {enemies, playerHP, username} = req.body;
   let newPlayerHP = playerHP;
-  
+  let doc = await PlayerModel.findOne({ username:username });
+ // Look at skills and stats to determine what happens
+ // Skills like dodge have a certain chance of happening
+ // increases as dexterity is grown and leveled up (starts with 10% of success)
+
+ // Stats like resistance will lower the damage if the attack does succeed
+  let userStats = doc.stats;
+  let userSkills = doc.skills;
+
+  let resist = userStats.Soul.resistance;
+
+  // If Resistance is between 1-5 then remove 5 points from the DMG
+  // 5-10 = 10 points from DMG
+  // 10-15 = 20 points from DMG
+  // and so on...
+
+  console.log(resist)
+
+  // 3 functions
+  // 
+  const calculateHit = () => {
+
+  }
+
   for(let i=0; i < enemies.length; i++){
     let enemySkills = enemies[i].skills;
-
+    console.log(enemySkills);
     newPlayerHP -= enemySkills.attackDMG;
   };
 
-  // must set a way so that each enemy hits one at a time
+  newPlayerHP = 100;
 
   try {
     res.send({newPlayerHP});

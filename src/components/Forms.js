@@ -194,7 +194,7 @@ const InfoForms = () => {
       {!showRegister && !showLogin && (
          <div>
           <div className='logo-div'>
-          <h2>Welcome to the</h2>
+          <h1>Welcome to the</h1>
           <img className='logo' src={logo} alt="Description" />
           
          </div>  
