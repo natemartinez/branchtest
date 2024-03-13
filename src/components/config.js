@@ -1,4 +1,4 @@
-const serverUrl = 'http://localhost:3000';
+const serverUrl = 'https://branchtest-bkend.onrender.com';
 //https://branchtest-bkend.onrender.com
 
 export default serverUrl
