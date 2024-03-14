@@ -81,6 +81,7 @@ const InfoForms = () => {
             <h1>Register</h1>
             <p className='message'>{message}</p>
           </div> 
+
           <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
             <input
               type="text"
@@ -97,7 +98,7 @@ const InfoForms = () => {
                required
              />
              <button className='submit-btn' type="submit">Submit</button>
-             <button className='form-btn' onClick={showLoginForm}>Login</button>
+             <button className='form-btn' onClick={showLoginForm}>Existing Player?</button>
           </form>
          </div>
             ): 
@@ -157,10 +158,13 @@ const InfoForms = () => {
       <div>
         {!formSubmitted ? (
          <div>
-           <div className='form-login'>
+           <div className='form-logo-div'>
+             <img className='form-logo' src={logo} alt="Description" />
              <h1>Login</h1>
              <p className='message'>{message}</p>
-             <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
+           </div> 
+
+           <form className='input-form' onSubmit={submit} setFormSubmitted={setFormSubmitted}>
                <input
                  type="text"
               value={username}
@@ -176,9 +180,9 @@ const InfoForms = () => {
                required
                 />
                 <button className='submit-btn' type="submit">Submit</button>
-                <button className='form-btn' onClick={showRegisterForm}>Register</button>
-             </form>
-           </div> 
+                <button className='form-btn' onClick={showRegisterForm}>New Player?</button>
+           </form>
+          
          </div>
             ): 
            (
@@ -195,8 +199,7 @@ const InfoForms = () => {
          <div>
           <div className='logo-div'>
           <h1>Welcome to the</h1>
-          <img className='logo' src={logo} alt="Description" />
-          
+          <img className='logo' src={logo} alt="Description" />     
          </div>  
          <div className='form-btn-div'>
           <button className='form-btn' onClick={showRegisterForm}>Register</button>

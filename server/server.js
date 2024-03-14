@@ -686,27 +686,28 @@ app.post('/receiveSkills', async (req, res) => {
 
 app.post('/attackAction', async(req, res) => {
   const {attack, enemy, username} = req.body;
-  let attackedEnemy = enemy;
- // let doc = await PlayerModel.findOne({ username:username });
+  let enemyUpdate = enemy;
+  let doc = await PlayerModel.findOne({ username:username });
+  let wpStat = doc.stats.Soul.willpower;
+  let message = 'Nice attack!'
 
+  const checkForCrit = (attack, willpower) => {
+    let crit = Math.floor(Math.random() * 100); // if result is greater than 80, then crit works
+    if(willpower >= 2) {
+      if(crit >= 75){
+        attack.baseDMG += 20;
+        message = 'Critical Hit!'
+      }
+    };
+  };
+  checkForCrit(attack, wpStat);
+  enemyUpdate.status.curHealth -= attack.baseDMG;
+  
   // stats like willpower will increase critical rate as health goes down
   // use stats to increase or possibility decrease attack success and DMG
 
-
-  attackedEnemy.status.curHealth -= attack.baseDMG;
-
-  if(attackedEnemy.status.curHealth > 0){
-    attackedEnemy.status.condition = 'alive'
-  }else{
-    attackedEnemy.status.condition = 'dead'
-  };
-
-  let attackEvent = {
-     enemy: attackedEnemy
-  };
-
   try {
-    res.send({attackEvent});
+    res.send({enemyUpdate, message});
   } catch (err) {
     console.error('Error', err);
     res.status(500).json({ message: "An error has occurred" });
@@ -715,41 +716,50 @@ app.post('/attackAction', async(req, res) => {
 
 app.post('/enemyAttack', async(req, res) => {
   const {enemies, playerHP, username} = req.body;
-  let newPlayerHP = playerHP;
   let doc = await PlayerModel.findOne({ username:username });
+
+  let enemyAttacks = [5, 10]; //examples: eventually will be enemies.attacks
+  let result = [];
+  let message = 'Enemy is attacking';
+
+  const enemyHit = (attacks, hp) => {
+    let hpHit = hp;
+   for(let i=0; i < attacks.length; i++){
+     let curAttack = enemyAttacks[i];
+     hpHit = hpHit - curAttack;
+     result.push(hpHit);
+   };
+  // console.log(hpHit)
+  }
+
+  enemyHit(enemyAttacks, playerHP);
+
  // Look at skills and stats to determine what happens
  // Skills like dodge have a certain chance of happening
  // increases as dexterity is grown and leveled up (starts with 10% of success)
-
+ 
  // Stats like resistance will lower the damage if the attack does succeed
-  let userStats = doc.stats;
-  let userSkills = doc.skills;
-
-  let resist = userStats.Soul.resistance;
-
+ 
+ // let userStats = doc.stats;
+ // let userSkills = doc.skills;
+ // let resist = userStats.Soul.resistance;
   // If Resistance is between 1-5 then remove 5 points from the DMG
   // 5-10 = 10 points from DMG
   // 10-15 = 20 points from DMG
   // and so on...
 
-  console.log(resist)
+  // need to check for enemies' speed to determine who hits
 
-  // 3 functions
-  // 
-  const calculateHit = () => {
+  // also need to randomize what attack the enemy chooses - not priority
+  
+  // 3 functions:
+  // - Resist
+  // - Critical
+  // - Does it land?
 
-  }
-
-  for(let i=0; i < enemies.length; i++){
-    let enemySkills = enemies[i].skills;
-    console.log(enemySkills);
-    newPlayerHP -= enemySkills.attackDMG;
-  };
-
-  newPlayerHP = 100;
 
   try {
-    res.send({newPlayerHP});
+    res.send({result, message});
   } catch (err) {
     console.error('Error', err);
     res.status(500).json({ message: "An error has occurred" });

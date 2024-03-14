@@ -31,9 +31,9 @@ body{
     align-items: center;
 }
 .form-logo{
-    width: 7em;
-    margin-top: 1.5em;
-    margin-bottom: 3em;
+    width: 10em;
+    margin-top: 2.5em;
+    margin-bottom: 2em;
 }
 .logo-div{
     display: flex;
@@ -47,7 +47,7 @@ body{
     font-weight: bold;
 }
 .logo{
-    width: 8em;
+    width: 10em;
     margin-bottom: 5em;
 }
 
@@ -58,10 +58,11 @@ body{
     align-items: center;
 }
 .form-btn{
-    width: 7em;
+    width: 9em;
     height: 2.5em;
-    margin: 1.5em;
+    margin: 1em;
     border-radius: 10px;
+    padding: 0em;
     font-size: 2em;
     background-color:#44342d;
     color: white;
@@ -146,10 +147,6 @@ body{
 .logo-div h2{
     font-weight: bold;
 }
-.logo{
-    width: 8em;
-    margin-bottom: 5em;
-}
 
 .form-btn-div{
     display: flex;
@@ -157,16 +154,7 @@ body{
     flex-direction: column;
     align-items: center;
 }
-.form-btn{
-    width: 7em;
-    height: 2.5em;
-    margin: 1.5em;
-    border-radius: 10px;
-    font-size: 2em;
-    background-color:#44342d;
-    color: white;
-    border: brown;
-}
+
 .input-form{
     display: flex;
     position: relative;
@@ -205,11 +193,16 @@ body{
    .logo{
     width: 10em;
     margin-top: 1em;
+    margin-bottom: 2em;
    } 
 
    .message{
      font-size: 1.4em;
      color: rgb(24, 57, 24);
+   }
+
+   .form-login{
+    margin-top: 0vh;
    }
 
    .form-btn-div{
@@ -219,13 +212,13 @@ body{
    .form-btn{
         width: 8em;
         height: 2.5em;
-        font-size: 2em;
+        font-size: 1.5em;
         margin-top: 1em;
    }
 
    .input-form input{
     height: 1.5em;
-    width: 15em;
+    width: 20em;
     padding: 1em;
     font-size: 1em;
     margin: 1em;
@@ -233,7 +226,7 @@ body{
    }
    .submit-btn{
     height: 2em;
-    width: 7em;
+    width: 8em;
     font-size: 1.5em;
     margin-top: 1em;
     background-color: rgb(86, 64, 54);
@@ -248,15 +241,15 @@ body{
         font-size: 2em;
     }
     .logo-div{
-        margin-top:5em;
+        margin-top:3em;
     }
     .logo{
-        width: 14em;
+        width: 10em;
     }
     .form-btn{
         width: 8em;
-        height: 3.5em;
-        font-size: 2.5em;
+        height: 3em;
+        font-size: 1.5em;
     }
     .info-square{
         width: 40em!important;
@@ -517,9 +510,10 @@ body{
     padding-top: 1em;
 }
 .game-info-text{
-    font-size: 1.2em;
+    font-size: 1.5em;
     color: antiquewhite;
-    margin-top: 1em;
+    margin-top: 4em;
+    padding: 1.5em;
 }
 .game-info-text h2{
     font-size: 1.3em;  
