@@ -92,33 +92,43 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
 
     // Enemy's attack 
     const enemyTurn = async (enemies, playerHP, username) => { 
+
        let enemyInfo = {
          enemies: enemies,
          playerHP:playerHP,
          username:username,
        };
 
+       console.log(enemyInfo);
         try {
           const response = await axios.post(serverUrl + '/enemyAttack', enemyInfo);
-          console.log(response.data)
           let hpUpdate = response.data.result;
+          console.log(hpUpdate);
+          setHealth(hpUpdate[0]);
+
+          setTimeout(() => setUserTurn(true), 3000);
+  
+          /*
+          
           let text = response.data.message;
           const enemyTurns = (i) => {
+            console.log(i);
+            
             if(i < hpUpdate.length){
               setTimeout(() => {setHealth(hpUpdate[i])}, 3000);
               setTimeout(() => {newText(text)}, 1000);
               setTimeout(() => {i++; enemyTurns(i)}, 2000);
             }
+            
           }; //Should use recursion more often
           enemyTurns(0);
-
+          setTimeout(() => {newText('Your Turn')}, 6000);
           setUserTurn(true);
-
+          */
         } catch (error) {
           console.error('Error:', error);
         }
-        
-      //setUserTurn(true);
+   
     };
     // User's attack 
     const attackStart = (option, enemyIndex, username) => {
@@ -128,29 +138,29 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
         const getAttack = async (attack) => {
           let curAttack = {
             attack:attack,
-            enemy: curEnemies[enemyIndex],
+            enemy: curEnemiesUpdate[enemyIndex],
             username: username
           };   
           try {
              const response = await axios.post(serverUrl + '/attackAction', curAttack);
              let attackResult = response.data.enemyUpdate;
-             let attackMSG = response.data.message;   
-             
+             let attackMSG = response.data.message;         
              curEnemiesUpdate[enemyIndex] = attackResult; 
+             if(curEnemiesUpdate[enemyIndex].status.curHealth <= 0){
+              curEnemiesUpdate[enemyIndex].status.condition = 'dead';
+             }
+
              setCurEnemies(curEnemiesUpdate);
-             setText(attackMSG);
+             newText(attackMSG);
+             setTimeout(() => setUserTurn(false), 3000);
+
           } catch (error) {
              console.error('Error:', error);
           }
         }
-
-        getAttack(option);
-        setAttackBegin(false);
-        setSelectedEnemy(null);
-        setUserTurn(false);  
-
-        newText("Enemy's Turn");   
-        enemyTurn(curEnemiesUpdate, healthBar, username); 
+         getAttack(option); // display attack name in the future, sets the attackStart in motion
+         setAttackBegin(false);
+         setSelectedEnemy(null);
       } else{
         console.log('must choose enemy first');
       }
@@ -279,11 +289,15 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
     }, [selectedEnemy]);
 
     useEffect(() => {
-        
-        if(userTurn == true && attackBegin == true){
+        if(userTurn === true){
+          newText('Your Turn');
+        }
+        if(userTurn === true && attackBegin === true){
           newText('Choose an enemy');
-        } 
-       
+        }    
+        if(userTurn === false){
+          enemyTurn(curEnemies, healthBar, username);
+        }  
     }, [userTurn, attackBegin]);
     
     useEffect(() => { 

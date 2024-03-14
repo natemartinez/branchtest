@@ -688,6 +688,7 @@ app.post('/attackAction', async(req, res) => {
   const {attack, enemy, username} = req.body;
   let enemyUpdate = enemy;
   let doc = await PlayerModel.findOne({ username:username });
+
   let wpStat = doc.stats.Soul.willpower;
   let message = 'Nice attack!'
 
@@ -722,6 +723,8 @@ app.post('/enemyAttack', async(req, res) => {
   let result = [];
   let message = 'Enemy is attacking';
 
+  console.log('Player HP: ', playerHP);
+
   const enemyHit = (attacks, hp) => {
     let hpHit = hp;
    for(let i=0; i < attacks.length; i++){
@@ -729,7 +732,6 @@ app.post('/enemyAttack', async(req, res) => {
      hpHit = hpHit - curAttack;
      result.push(hpHit);
    };
-  // console.log(hpHit)
   }
 
   enemyHit(enemyAttacks, playerHP);
