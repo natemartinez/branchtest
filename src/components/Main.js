@@ -292,6 +292,26 @@ const images = require.context('../../public/images', true);
   return (
     <div> 
         <>
+        {!showText ? (
+          ''
+         ) : (
+            <div className='game-info-div'>
+             <div className='game-info-square'>
+              <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>     
+              </div> 
+              <button onClick={() => showSquare(false)} id='close-square' type="submit">Next</button>
+             </div>
+            </div>
+         )}
+          {showResult && (
+           <div className='result-div'>
+             <div className='result-info'>
+              <h1>{showResult}</h1>
+              <h3>{showResultEvent}</h3>
+              <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
+             </div> 
+           </div>
+           )}
          <div className='HUD'>
            <h2>{playerName}</h2>
            {stageType == 'location' ? (
@@ -299,19 +319,6 @@ const images = require.context('../../public/images', true);
            ) : ''}      
            <ProgressBar variant='danger' max={100} now={healthBar} label='HP' className='health-bar'/>        
          </div>
-         {!showText ? (
-          ''
-         ) : (
-           <>
-           <div className='game-info-div'>
-            <div className='game-info-square'>
-              <div className='game-info-text' dangerouslySetInnerHTML={{ __html:curText }}>     
-              </div> 
-              <button onClick={() => showSquare(false)} id='close-square' type="submit">Next</button>
-            </div>
-           </div>
-           </> 
-         )}
          <div className='game-options'>
           {(stageType === 'combat') ? <Combat level={curStage} username={playerName} playerHealth={setHealth} stageChange={nextStage}/> : 
            <div className='option-container'> 
@@ -324,15 +331,6 @@ const images = require.context('../../public/images', true);
             </button>
            </div>  
            ))}
-           {showResult && (
-           <div className='result-div'>
-             <div className='result-info'>
-              <h1>{showResult}</h1>
-              <h3>{showResultEvent}</h3>
-              <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
-             </div> 
-           </div>
-           )}
            {(stageType === 'location') ? '' : <button onClick={() => nextStage(playerName, curStage, stageType)} id='next-btn'>Next</button>}
          </div>
         }

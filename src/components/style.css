@@ -496,7 +496,13 @@ body{
 .game-info-div{
     display: flex;
     justify-content: center;
-    position: relative;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    padding-top: 5em;
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 .game-info-square{
     position: absolute;
@@ -510,7 +516,7 @@ body{
     padding-top: 1em;
 }
 .game-info-text{
-    font-size: 1.5em;
+    font-size: 1em;
     color: antiquewhite;
     margin-top: 4em;
     padding: 1.5em;
@@ -640,8 +646,23 @@ body{
 }
 
 .result-div{
-    display: flex;
     position: absolute;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.result-div h1{
+    font-size: 2.5em;
+}
+.result-div h3{
+    font-size: 1.5em;
+}
+
+.result-info{
+    display: flex;
+    position: relative;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -654,18 +675,6 @@ body{
     width: 20em;
     border-radius: 10px;
     font-size: 1em;
-}
-.result-div h1{
-    font-size: 2.5em;
-}
-.result-div h3{
-    font-size: 1.5em;
-}
-
-.result-info{
-    position: relative;
-    text-align: center;
-    padding: 2.5em;
 }
 #result-btn{
     width: 9em;
@@ -749,7 +758,7 @@ body{
 
 .action-btn{
     width: 9em;
-    height: 2.5em;
+    height: 3.5em;
     margin: 0.3em;
     border-radius: 10px;
     font-size: 1.5em;

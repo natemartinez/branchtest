@@ -99,13 +99,11 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
          username:username,
        };
 
-       console.log(enemyInfo);
-        try {
+       try {
           const response = await axios.post(serverUrl + '/enemyAttack', enemyInfo);
           let hpUpdate = response.data.result;
           console.log(hpUpdate);
           setHealth(hpUpdate[0]);
-
           setTimeout(() => setUserTurn(true), 3000);
   
           /*
@@ -125,9 +123,9 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
           setTimeout(() => {newText('Your Turn')}, 6000);
           setUserTurn(true);
           */
-        } catch (error) {
+       } catch (error) {
           console.error('Error:', error);
-        }
+       }
    
     };
     // User's attack 
@@ -250,7 +248,8 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
           deadEnemies.push(curEnemies[i]);
           if(curEnemies.length == deadEnemies.length){
             setShowResult(true);
-            setText('You Won!')
+            setText('You Won!');
+            return;
           }
         } else{
           break
@@ -296,7 +295,8 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
           newText('Choose an enemy');
         }    
         if(userTurn === false){
-          enemyTurn(curEnemies, healthBar, username);
+          newText("Enemy's Turn");
+         setTimeout(() => {enemyTurn(curEnemies, healthBar, username)}, 2000); 
         }  
     }, [userTurn, attackBegin]);
     
@@ -393,7 +393,8 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
   const Result = () => {
     
     return (
-      <div className='result-div'>
+      <div className='result-div-container'>
+        <div className='result-div'>
         {(healthBar <= 0) ? 
            <div className='result-info'>
              <h2 className='combat-result'>You Lost!</h2>
@@ -405,7 +406,9 @@ const Combat = ({level, username, playerHealth, stageChange}) => {
            </div>
         }
           
+        </div>
       </div>
+      
     );
   }
 

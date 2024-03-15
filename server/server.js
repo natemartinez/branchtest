@@ -723,7 +723,6 @@ app.post('/enemyAttack', async(req, res) => {
   let result = [];
   let message = 'Enemy is attacking';
 
-  console.log('Player HP: ', playerHP);
 
   const enemyHit = (attacks, hp) => {
     let hpHit = hp;
