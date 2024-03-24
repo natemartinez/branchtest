@@ -27,6 +27,7 @@ async function connect() {
   }
 }
 
+
 //Checks if there's not an existing user
 app.post('/signup', (req, res) => {
   const userData = req.body;
@@ -63,14 +64,10 @@ app.post('/login', async (req, res) => {
   const password = req.body.password;
 
   try {
-    // Check the username and the password
-
     let doc = await PlayerModel.find({ $and: [
       { username: username },
       { password: password }
     ]});
-
-    // use username to look 
 
     if (!doc || doc.length === 0) {
       res.status(200).json({ message: "User doesn't exist" });
@@ -84,32 +81,208 @@ app.post('/login', async (req, res) => {
     console.error('Error:', err);
     res.status(500).json({ message: 'Error updating document' });
   }
-  
 });
+
+app.get('/startQuiz', async (req, res) => {
+  const intTraits = {
+  // In the future I want to make semi-traits
+  // ones that's in the middles of both traits, leaning slightly towards one or the other
+    mental: [
+      {name:'Logical', weight: 0},
+      {name:'Creative', weight: 0}
+    ],
+    social: [
+      {name:'Introvert', weight: 0},
+      {name:'Extrovert', weight: 0}
+    ],
+    sleep: [
+      {name:'Early Bird', weight: 0},
+      {name:'Night Owl', weight: 0}
+    ],
+    temper: [
+      {name:'Hothead', weight: 0},
+      {name:'Pacifist', weight: 0}
+    ],
+  };
+
+  const questions = [
+   "You make decisions based on what is effective, rather than how others may feel",
+   "Being at a quiet place is your cup of tea, over being in large gatherings",
+   "You have a reliable sleep schedule",
+   "You're usually the first to speak up if something goes wrong",
+   "You feel your social battery drains faster than most",
+   "The advice you give is based on what worked for you, rather than what makes them feel better",
+  ];
+
+  try {
+    res.send({intTraits, questions});
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Error updating document' });
+  }
+});
+app.post('/saveTraits', async (req, res) => {
+  const {traits, option, questionNum} = req.body;
+  //make sure there's an odd number of questions
+  // so that the traits can't match
+   switch(questionNum) {
+    case 0:
+      if(option == 'Agree'){
+        traits.mental[0].weight += 2;
+      } else if(option == 'Slightly Agree'){
+        traits.mental[0].weight += 1;
+      } else if(option == 'Slightly Disagree'){
+        traits.mental[1].weight += 1;
+      }else if(option == 'Disagree'){
+        traits.mental[1].weight += 2;
+    }
+    break;
+    case 1:
+      if(option == 'Agree'){
+        traits.social[0].weight += 2;
+      } else if(option == 'Slightly Agree'){
+        traits.social[0].weight += 1;
+      } else if(option == 'Slightly Disagree'){
+        traits.social[1].weight += 1;
+      }else if(option == 'Disagree'){
+        traits.social[1].weight += 2;
+    }
+    break;
+    case 2:
+      if(option == 'Agree'){
+        traits.sleep[0].weight += 2;
+      } else if(option == 'Slightly Agree'){
+        traits.sleep[0].weight += 1;
+      } else if(option == 'Slightly Disagree'){
+        traits.sleep[1].weight += 1;
+      }else if(option == 'Disagree'){
+        traits.sleep[1].weight += 2;
+    }
+    break;
+    case 3:
+      if(option == 'Agree'){
+        traits.temper[0].weight += 2;
+      } else if(option == 'Slightly Agree'){
+        traits.temper[0].weight += 1;
+      } else if(option == 'Slightly Disagree'){
+        traits.temper[1].weight += 1;
+      }else if(option == 'Disagree'){
+        traits.temper[1].weight += 2;
+      }
+      break;
+    case 4:
+      if(option == 'Agree'){
+        traits.social[0].weight += 3;
+      } else if(option == 'Slightly Agree'){
+        traits.social[0].weight += 2;
+      } else if(option == 'Slightly Disagree'){
+        traits.social[1].weight += 2;
+      }else if(option == 'Disagree'){
+        traits.social[1].weight += 3;
+      }
+      break;
+    case 5:
+      if(option == 'Agree'){
+        traits.mental[0].weight += 2;
+      } else if(option == 'Slightly Agree'){
+        traits.mental[0].weight += 1;
+      } else if(option == 'Slightly Disagree'){
+        traits.mental[1].weight += 1;
+      }else if(option == 'Disagree'){
+        traits.mental[1].weight += 2;
+      }
+      break;
+   }
+
+  try {
+    res.send({traits});
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Error updating document' });
+  }
+});
+app.post('/calcResult', async (req, res) => {
+   const {results} = req.body;
+   let traitArr = [];
+   let stats = {
+    "Physical": {
+      "strength": 1,
+      "dexterity": 1
+    },
+    "Mental": {
+      "intuition": 1,
+      "intelligence": 1
+    },
+    "Soul": {
+      "willpower": 1,
+      "resistance": 1
+    },
+    "Expression": {
+      "creativity": 1,
+      "presence": 1
+    }
+   };
+
+   // sets traits
+   Object.entries(results).forEach(function([key, traits]) {
+     let trait;
+     results[key].forEach(function(compTrait){
+       if(trait == undefined){
+        trait = compTrait;
+       }else if(compTrait.weight > trait.weight){
+         trait = compTrait;
+       } else if(trait.weight > compTrait.weight){
+         console.log('keep this trait', trait);
+       }
+     });
+    traitArr.push(trait);
+   });
+
+   //sets stats based on chosen traits
+   traitArr.forEach(result => {
+    switch (result.name) {
+       case "Logical":
+       stats.Mental.intelligence += 2;
+       break;
+       case "Creative":
+       stats.Expression.creativity += 2;
+       break;
+       case "Introvert":
+       stats.Mental.intuition += 1;
+       break;
+       case "Extrovert":
+       stats.Soul.willpower += 1;
+       break;
+       case "Early Bird":
+       stats.Physical.strength += 1;
+       break;
+       case "Night Owl":
+       stats.Soul.resistance += 1;
+       break;
+       case "Hothead":
+       stats.Soul.willpower += 1;
+       stats.Soul.resistance += 1;
+       break;
+       case "Pacifist":
+       stats.Expression.presence += 1;
+       stats.Soul.willpower += 1;
+       break;
+    } 
+   });
+   console.log(stats);
+  try {
+    res.send({traitArr, stats});
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json({ message: 'Error updating document' });
+  }
+});
+
 //Handles quiz results and initializes 'stats'
 app.post('/sendUser', async (req, res) => {
-  const username = req.body[0];
-  const results = req.body[1];
+  const {traits, stats, name} = req.body;
 
   // Initializes all of player's info
-  let stats = {
-    'Physical': {
-      'strength': 1,
-      'dexterity': 4
-    },
-    'Mental': {
-      'intuition': 1,
-      'intelligence': 1
-    },
-    'Soul': {
-      'willpower': 1,
-      'resistance': 1
-    },
-    'Expression': {
-      'creativity': 1,
-      'presence': 1
-    }
-  };
   let skills = [];
   let attacks = [];
   let status = {
@@ -127,54 +300,14 @@ app.post('/sendUser', async (req, res) => {
   };
   let inventory = [];
 
-  results.forEach(result => {
-    switch (result) {
-       case 'Logical':
-       stats.Mental.intelligence += 2;
-       stats.Mental.intuition += 1;
-       break;
-       case 'Creative':
-       stats.Expression.creativity += 2;
-       stats.Expression.presence += 1;
-       break;
-       case 'Introvert':
-       stats.Mental.intuition += 2;
-       stats.Expression.creativity += 1;
-       break;
-       case 'Extrovert':
-       stats.Expression.presence += 2;
-       stats.Soul.willpower += 1;
-       break;
-       case 'Early Bird':
-       stats.Physical.strength += 1;
-       stats.Physical.dexterity += 1;
-       break;
-       case 'Night Owl':
-       stats.Soul.resistance += 1;
-       stats.Soul.willpower += 2;
-       break;
-       case 'Fierce':
-       stats.Physical.strength += 2;
-       stats.Soul.willpower += 1;
-       stats.Soul.resistance += 1;
-       break;
-       case 'Steady':
-       stats.Mental.intuition += 2;
-       stats.Expression.presence += 1;
-       stats.Soul.willpower += 2;
-       break;
-    } 
-  });
-  //
-
   try {
-    let doc = await PlayerModel.findOne({ username: username.user });
+    let doc = await PlayerModel.findOne({ username: name });
     if (!doc) {
-      doc = new PlayerModel({ username: username.user, status:status, skills:skills, attacks:attacks, personality: results, stats: stats, inventory:inventory, progress: progressStart });
+      doc = new PlayerModel({ username: name, status:status, skills:skills, attacks:attacks, personality: traits, stats: stats, inventory:inventory, progress: progressStart });
       await doc.save();
       res.status(200).json({ message: 'New document inserted successfully' });
     } else {
-      await PlayerModel.updateOne({ username: username.user }, { $set: {status:status, skills:skills, attacks:attacks, personality: results, stats: stats, inventory:inventory, progress: progressStart} });
+      await PlayerModel.updateOne({ username: name }, { $set: {status:status, skills:skills, attacks:attacks, personality: traits, stats: stats, inventory:inventory, progress: progressStart} });
       res.status(200).json({ message: 'Document updated successfully', stats });
     }
   } catch (err) {
@@ -193,11 +326,14 @@ app.post('/buildSkills', async (req, res) => {
   let skillsArray = [];
 
   if(doc){
+    if(physicalClass.strength >= 0){
+      let punch = await AttackModel.findOne({ skillName: 'Punch' });  
+      attacksArray.push(punch);
+    };
     if(physicalClass.strength > 1){
     // get the punching skill
-     let punch = await AttackModel.findOne({ skillName: 'Punch' });  
      let kick = await AttackModel.findOne({ skillName: 'Kick' });
-     attacksArray.push(punch, kick);
+     attacksArray.push(kick);
     };
     if(physicalClass.dexterity > 3){
       let dodge = await SkillModel.findOne({ name: 'dodge' }); 
@@ -228,9 +364,9 @@ const Stages = [
           text:
           "<h2>In the BranchTest, your personality affects the success and outcomes of your decisions</h2>" +
            "<div class='choice-diagram'>" +
-            "<div class='diff-div'><img class='diff-exp' src='images/easy.png'></img><h3> = Easy</h3></div>" +
-            "<div class='diff-div'><img class='diff-exp' src='images/medium.png'></img><h3> = Medium</h3></div>" +
-            "<div class='diff-div'><img class='diff-exp' src='images/hard.png'></img><h3> = Hard</h3></div>" +
+            "<div class='diff-div'><img class='diff-exp' src='images/easy.png'></img><p> = Easy</p></div>" +
+            "<div class='diff-div'><img class='diff-exp' src='images/medium.png'></img><p> = Medium</p></div>" +
+            "<div class='diff-div'><img class='diff-exp' src='images/hard.png'></img><p> = Hard</p></div>" +
            "</div>",        
           stageInfo: {
              level:1.1,
@@ -250,8 +386,8 @@ const Stages = [
               {
                 name:'Drawer',
                 type: 'Mental',
-                stat: 'intuition',
-                probability: 1,
+                stat: 'strength',
+                probability: 3,
                 result: {
                   item: 'Med-kit',
                   xp:50
@@ -262,7 +398,7 @@ const Stages = [
                 name:'Under the rug',
                 type: 'Mental',
                 stat: 'intuition',
-                probability: 1,
+                probability: 4,
                 result: {
                   item: 'Safety Glasses',
                   xp:50
@@ -273,7 +409,7 @@ const Stages = [
                 name:'Curtains',
                 type: 'Mental',
                 stat: 'intuition',
-                probability: 0,
+                probability: 2,
                 result: {
                   item: 'Wooden Panel',
                   xp:50
@@ -286,7 +422,7 @@ const Stages = [
       },//1.1
       {
           name:'location1',
-          text: "<h2>Choose your next location</h2>",    
+          text: "<h1>Choose your next location</h1>",    
           stageInfo: {
              level:1.2,
              type: 'location', 
@@ -311,16 +447,16 @@ const Stages = [
       },//1.2
       {
         name: 'Office',
-        text: 'Looking in the office',
+        text: '<h1>Looking in the office</h1>',
         stageInfo: {
            level:1.3,
            type: 'search',
            options:[
             {
               name:'Desk',
-              type: 'Physical',
-              stat: 'strength',
-              probability: 1,
+              type: 'Mental',
+              stat: 'intelligence',
+              probability: 3,
               result: {
                 item: 'Coins',
                 xp: 0
@@ -329,9 +465,9 @@ const Stages = [
             },
             {
               name:'File cabinet',
-              type: 'Mental',
-              stat: 'intuition',
-              probability: 1,
+              type: 'Physical',
+              stat: 'strength',
+              probability: 2,
               result: {
                 item: 'Coins',
                 xp: 0
@@ -341,8 +477,8 @@ const Stages = [
             {
               name:'Check the whiteboard',
               type: 'Mental',
-              stat: 'intuition',
-              probability: 1,
+              stat: 'intelligence',
+              probability: 2,
               result: {
                 item: 'Stick',
                 xp: 30
@@ -353,7 +489,7 @@ const Stages = [
               name:'Check the windows',
               type: 'Mental',
               stat: 'intuition',
-              probability: 1,
+              probability: 2,
               result: {
                 item: 'Tape',
                 xp: 50
@@ -366,7 +502,7 @@ const Stages = [
       },//1.3
       {
         name: 'Hallway',
-        text: 'Looking in the hallway',
+        text: '<h1>Looking in the hallway</h1>',
         stageInfo: {
            level:1.4,
            type: 'search',
@@ -375,7 +511,7 @@ const Stages = [
               name:'Janitor closet',
               type: 'Physical',
               stat: 'strength',
-              probability: 1,
+              probability: 4,
               result: {
                 item: 'Coins',
                 xp: 0
@@ -386,7 +522,7 @@ const Stages = [
               name:'File cabinet',
               type: 'Mental',
               stat: 'intuition',
-              probability: 1,
+              probability: 3,
               result: {
                 item: 'Coins',
                 xp: 0
@@ -397,7 +533,7 @@ const Stages = [
               name:'Check the whiteboard',
               type: 'Mental',
               stat: 'intuition',
-              probability: 1,
+              probability: 3,
               result: {
                 item: 'Stick',
                 xp: 30
@@ -408,7 +544,7 @@ const Stages = [
               name:'Check the windows',
               type: 'Mental',
               stat: 'intuition',
-              probability: 1,
+              probability: 2,
               result: {
                 item: 'Tape',
                 xp: 50
@@ -421,7 +557,7 @@ const Stages = [
       },//1.4
       {
         name:'battle1',
-        text: 'You have been attacked by ghosts! <br> Time to fight!',
+        text: '<h2>You have been attacked by ghosts!</h2> <br> <h2>Time to fight!</h2>',
         stageInfo: {
            level: 1.7,
            enemies:['ghost', 'ghost'],
@@ -436,7 +572,7 @@ const Stages = [
       },//1.7
       {
         name:'location1',
-        text: "Choose your next location",    
+        text: "<h1>Choose your next location</h1>",    
         stageInfo: {
            level:1.8,
            type: 'location', 
@@ -597,6 +733,8 @@ app.post('/stageChange', async (req, res) => {
         let stageInfo = Stages[i].stageInfo;
          if(stageInfo.level === level) {
           nextStage = stageInfo.result;
+          console.log('Level: ', nextStage);
+
           levelUpdate.levelNum = nextStage;
           await PlayerModel.updateOne({username: username},{ $set: { progress:levelUpdate}});
          } 

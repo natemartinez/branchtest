@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Question from './Question';
-import Result from './Result';
+import Quiz from './Quiz';
 import ReactLoading from "react-loading";
 import serverUrl from './config';
 
@@ -212,72 +211,6 @@ const InfoForms = () => {
       {showLogin && <Login />}
     </div>
   )
-};
-
-const Quiz = (username) => {
-  const [currentQuestion, setQuestion] = useState(0);
-  const [intro, setIntro] = useState(true);
-  const quizData = [
-    {
-      question: 'Which side of your brain do you use more of?',
-      options: ['Logical', 'Creative'],
-    },
-    {
-      question: 'Describe yourself in social situations',
-      options: ['Introvert', 'Extrovert'],
-    },
-    {
-      question: 'Do you prefer the early morning or late night?',
-      options: ['Early Bird', 'Night Owl'],
-    },
-    {
-      question: 'Whats your temper like?',
-      options: ['Fierce', 'Steady'],
-    }
-  ];
-  const [userAnswers, setUserAnswers] = useState(Array(quizData.length).fill(' '));
-  const currentUser = username;
-  
-  const handleAnswerSelect = (answer) => {
-      const updatedAnswers = [...userAnswers];
-      updatedAnswers[currentQuestion] = answer;
-      setUserAnswers(updatedAnswers);
-  }
-
-  const goToNextQuestion = () => {
-    setQuestion(currentQuestion + 1);
-  }; 
-
-  const showSquare = (bool) => {
-      setIntro(bool);
-  };
-  
-  return (
-    <div className='info-div'>
-      {!intro ? (
-        ''
-      ) : (
-        <div className='info-square'>
-          <div className='info-text'>
-            <h1>This is the BranchTest.</h1>
-            <p>A personality-based RPG, where your best weapon is discovering yourself.</p>
-            <p>You will take a test to determine your personality.</p>
-          </div> 
-          <button onClick={() => showSquare(false)} id='close-square' type="submit">Begin</button>
-        </div>
-      )}
-
-      {currentQuestion < quizData.length ? (
-        <Question
-          data={quizData[currentQuestion]}
-          answerSelect={handleAnswerSelect}
-          nextQuestion={goToNextQuestion}
-        />
-      ) : (
-        <Result data={userAnswers} username={currentUser}/>
-      )}
-    </div>
-  );
 };
 
 const Forms = () => {

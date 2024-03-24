@@ -271,6 +271,8 @@ const images = require.context('../../public/images', true);
 
       axios.post(serverUrl + '/stageChange', stageInfo)
       .then(response => {
+        let next = response.data.nextStage;
+        setCurStage(next);
         getLevel(currentUser);
       })
       .catch(error => {
@@ -304,12 +306,14 @@ const images = require.context('../../public/images', true);
             </div>
          )}
           {showResult && (
-           <div className='result-div'>
-             <div className='result-info'>
-              <h1>{showResult}</h1>
-              <h3>{showResultEvent}</h3>
-              <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
-             </div> 
+           <div className='result-div-container'>
+            
+            <div className='result-info'>
+               <h1>{showResult}</h1>
+               <h3>{showResultEvent}</h3>
+               <button id='result-btn' onClick = {() => setShowResult(false)}type="submit">Continue</button>
+            </div> 
+         
            </div>
            )}
          <div className='HUD'>
@@ -370,7 +374,10 @@ const images = require.context('../../public/images', true);
           </div>                
           <div className='menu-div'>
             <a href="pages/goals.php">Goals</a>
-          </div>                           
+          </div>
+          <div className='menu-div'>
+          <Link to={'/'}>Log Out</Link>
+          </div>                            
           <div className='menu-div'>
            <button onClick={menuHide} className='close-menu-btn'>Close Menu</button>
           </div>                           
@@ -382,7 +389,7 @@ const images = require.context('../../public/images', true);
 
  const Main = () => {
   const location = useLocation();
-  let currentUser = location.state.username;
+  let currentUser = location.state.name;
    return (
     <div>
       <Game playerName={currentUser}/>
