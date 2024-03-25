@@ -183,7 +183,6 @@ const Result = ({results, playerName}) => {
        </div> ))} 
       </div> 
       <button className='result-btn' onClick={() => sendResults(traits, stats, playerName)}>Continue</button>
-      <button className='result-btn'>Retake Test</button>
     </div>
   );
 };
