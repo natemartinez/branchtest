@@ -121,15 +121,15 @@ const images = require.context('../../../public/images', true);
 
  const Bio = () => {
     const location = useLocation();
-    let currentUser = location.state.username;
+    let username = location.state.username;
    return (
     <div>
       <div className='bio-top'>
-         <Link to={'/main'} state={{username:currentUser}}><img className='back-arrow' src={images(`./back-arrow.png`)}></img></Link>    
+         <Link to={'/main'} state={{name:username}}><img className='back-arrow' src={images(`./back-arrow.png`)}></img></Link>    
         <h2>Bio</h2>
       </div>
-      <Info playerName={currentUser} />
-      <Menu playerName={currentUser}/>
+      <Info playerName={username} />
+      <Menu playerName={username}/>
     </div>
    );
  }
